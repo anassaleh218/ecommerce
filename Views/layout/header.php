@@ -58,7 +58,13 @@
                 </ul>
               </li>
               <li class="nav-item"><a class="nav-link" href="admin.php">Admin</a></li>
-              <li class="nav-item"><a class="nav-link" href="seller.php">Seller</a></li>
+              <li class="nav-item submenu dropdown">
+                <a  href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Seller</a>
+                <ul class="dropdown-menu">
+                  <li class="nav-item"><a class="nav-link" href="add-product.php">Add Product</a></li>
+                  <li class="nav-item"><a class="nav-link" href="manage-products.php">Manage Products</a></li>
+                </ul>
+              </li>
             </ul>
 
             <ul class="nav-shop">
