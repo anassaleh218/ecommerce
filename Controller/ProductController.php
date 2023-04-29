@@ -46,13 +46,13 @@ class ProductController
          if($this->db->openConnection())
          {
             if($product->quantity==0){
-                $product->status='Available';
-            }
-            else{
                 $product->status='Out Of Stock';
             }
+            else{
+                $product->status='Available';
+            }
             // $product->sellerid=
-            $query="insert into product values ('','$product->name','$product->description','$product->quantity',$product->status,'$product->color',$product->sizeid,'$product->price',$product->categoryid,'1','hh')";
+            $query="insert into product values ('','$product->name','$product->description','$product->quantity','$product->status','$product->color',$product->sizeid,'$product->price',$product->categoryid,'1','$product->image')";
             return $this->db->insert($query);
          }
          else
@@ -68,7 +68,7 @@ class ProductController
          $this->db=new DBController;
          if($this->db->openConnection())
          {
-            $query="select product.id,product.name,start_price as price,quantity,category.name as 'category' from product,category where product.category_id=category.id;";
+            $query="select product.id,product.name,start_price as price,quantity,product.image,category.name as 'category' from product join category on product.category_id=category.id order by product.id asc;";
             return $this->db->select($query);
          }
          else
@@ -92,20 +92,20 @@ class ProductController
          }
     }
 
-    public function getAllProductsWithImages()
-    {
-         $this->db=new DBController;
-         if($this->db->openConnection())
-         {
-            $query="select products.id,products.name,price,quantity,categories.name as 'category',image from products,categories where products.categoryid=categories.id;";
-            return $this->db->select($query);
-         }
-         else
-         {
-            echo "Error in Database Connection";
-            return false; 
-         }
-    }
+   //  public function getAllProductsWithImages()
+   //  {
+   //       $this->db=new DBController;
+   //       if($this->db->openConnection())
+   //       {
+   //          $query="select products.id,products.name,price,quantity,categories.name as 'category',image from products,categories where products.categoryid=categories.id;";
+   //          return $this->db->select($query);
+   //       }
+   //       else
+   //       {
+   //          echo "Error in Database Connection";
+   //          return false; 
+   //       }
+   //  }
 
 
 
