@@ -20,7 +20,7 @@ if (isset($_POST['name']) && isset($_POST['category']) && isset($_POST['size']) 
     if (move_uploaded_file($_FILES["img"]["tmp_name"], $location)) {
       $product->image = $location;
       if ($productController->addProduct($product)) {
-        header("location: ../index.php");
+        header("location: index.php");
       } else {
         $errMsg = "Something went wrong... try again";
       }
