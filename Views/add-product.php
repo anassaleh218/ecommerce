@@ -15,12 +15,13 @@ if (isset($_POST['name']) && isset($_POST['category']) && isset($_POST['size']) 
     $product = new Product;
     $product->adding($_POST['name'], $_POST['category'], $_POST['size'], $_POST['color'], $_POST['desc'], $_POST['quantity'], $_POST['price']);
 
-    $location = "./images" . date("h-i-s") . $_FILES["img"]["name"];
+    $location = "images/" . date("h-i-s") . $_FILES["img"]["name"];
 
     if (move_uploaded_file($_FILES["img"]["tmp_name"], $location)) {
       $product->image = $location;
       if ($productController->addProduct($product)) {
-        header("location: index.php");
+        // header("location: manage-products.php");
+        echo("<script>location.href = 'http://localhost/ecommerce/views/manage-products.php';</script>");
       } else {
         $errMsg = "Something went wrong... try again";
       }
@@ -70,7 +71,7 @@ if ($errMsg != "") {
     <div class="col-6 mx-auto">
 
 
-      <form action="add-product.php" method="post">
+      <form action="add-product.php" method="post" enctype="multipart/form-data">
 
 
         <div class="form-row">

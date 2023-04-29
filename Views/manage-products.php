@@ -66,6 +66,7 @@ $products = $productController->getAllProducts();
         <table class="table">
             <thead class="thead-dark">
                 <tr>
+                    <th scope="col">Image</th>
                     <th scope="col">Product Name</th>
                     <th scope="col">Price</th>
                     <th scope="col">Quantity</th>
@@ -79,6 +80,8 @@ $products = $productController->getAllProducts();
                 foreach ($products as $product) {
                 ?>
                     <tr>
+                        
+                        <td><img src="<?php echo $product['image'] ?>" alt="<?php echo $product['name'] ?>" width="250"></td>
                         <th scope="row"><?php echo $product['name'] ?> </th>
                         <td><?php echo $product['price'] ?></td>
                         <td><?php echo $product['quantity'] ?></td>
