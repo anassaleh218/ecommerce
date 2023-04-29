@@ -106,6 +106,23 @@ class ProductController
    //          return false; 
    //       }
    //  }
+public function getCategoryProducts($id)
+    {
+         $this->db=new DBController;
+         if($this->db->openConnection())
+         {
+            $query="select products.id,products.name,price,quantity,categories.name as 'category',image from products,categories where products.categoryid=categories.id and categories.id=$id;";
+            return $this->db->select($query);
+         }
+         else
+         {
+            echo "Error in Database Connection";
+            return false; 
+         }
+    }
+    
+    
+}
 
 
 
