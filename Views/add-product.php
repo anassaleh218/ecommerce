@@ -54,15 +54,15 @@ if (isset($_POST['name']) && isset($_POST['category']) && isset($_POST['size']) 
 <!-- ================ end banner area ================= -->
 
 
-      <?php
+<?php
 
-      if ($errMsg != "") {
-      ?>
-        <div class="alert alert-danger" role="alert"><?php echo $errMsg ?></div>
-      <?php
-      }
+if ($errMsg != "") {
+?>
+  <div class="alert alert-danger" role="alert"><?php echo $errMsg ?></div>
+<?php
+}
 
-      ?>
+?>
 
 <!--================Cart Area =================-->
 <section class="cart_area">
@@ -150,6 +150,7 @@ if (isset($_POST['name']) && isset($_POST['category']) && isset($_POST['size']) 
           <label for="formFileMultiple" class="form-label">Add Product Photos</label>
           <input class="form-control" type="file" name="img" id="formFileMultiple" multiple>
         </div>
+        
         <!--
           <div class="form-row">
             <div class="form-group col-md-6">
@@ -177,7 +178,7 @@ if (isset($_POST['name']) && isset($_POST['category']) && isset($_POST['size']) 
             </div>
           </div>
 
-          -->
+        -->
         <button type="submit" class="btn btn-primary">Add</button>
       </form>
     </div>
