@@ -87,9 +87,9 @@ $products = $productController->getAllProducts();
                         <td><?php echo $product['quantity'] ?></td>
                         <td><?php echo $product['category'] ?></td>
                         <td>
-                            <form action="" method="post">
-                                <input type="hidden" value="<?php echo $product['id'] ?>">
-                                <button type="hidden" name="" class="btn btn-warning">Modify</button>
+                            <form action="update-product.php" method="post">
+                            <input type="hidden" name="productId" value="<?php echo $product['id'] ?>">
+                                <button type="hidden"  class="btn btn-warning">Modify</button>
                             </form>
                         </td>
                         <td>
