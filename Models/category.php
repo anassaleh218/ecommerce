@@ -3,6 +3,7 @@
 class Category {
   private $id;
   private $name;
+  private $categoryQuantity;
 
   public function getName() {
     return $this->name;

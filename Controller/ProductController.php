@@ -4,22 +4,60 @@ require_once '../Models/product.php';
 require_once 'DBController.php';
 class ProductController
 {
-   protected $db;
 
-   //1. Open connection.
-   //2. Run query & logic.
-   //3. Close connection
-   public function getCategories()
-   {
-      $this->db = new DBController;
-      if ($this->db->openConnection()) {
-         $query = "select * from category";
-         return $this->db->select($query);
-      } else {
-         echo "Error in Database Connection";
-         return false;
-      }
-   }
+    protected $db;
+
+    //1. Open connection.
+    //2. Run query & logic.
+    //3. Close connection
+
+    public function getCategories()
+    {
+         $this->db=new DBController;
+         if($this->db->openConnection())
+         {
+            // $query="select * from category";
+            $query="SELECT 
+            category.*, 
+            SUM(product.quantity) as categoryQuantity
+          FROM 
+            category 
+          LEFT JOIN 
+            product 
+          ON 
+            category.id = product.category_id 
+          GROUP BY 
+            category.id;";
+            return $this->db->select($query);
+         }
+         else
+         {
+            echo "Error in Database Connection";
+            return false; 
+         }
+    }
+ 
+    public function getCategoryProducts($id)
+    {
+         $this->db=new DBController;
+         if($this->db->openConnection())
+         {
+            $query="select product.id,product.name,start_price as price,quantity,product.image,SUM(product.quantity) AS categoryQuantity,category.name as 'category' 
+            from product
+            join category on product.category_id=category.id
+            where product.category_id=category.id
+            and category.id = $id
+            order by product.id asc
+            ";
+            return $this->db->select($query);
+         }
+         else
+         {
+            echo "Error in Database Connection";
+            return false; 
+         }
+    }
+
 
    public function getSizes()
    {
@@ -42,6 +80,7 @@ class ProductController
             $product->status = 'Out Of Stock';
          } else {
             $product->status = 'Available';
+
          }
          // $product->sellerid=
          $query = "insert into product values ('','$product->name','$product->description','$product->quantity','$product->status','$product->color',$product->sizeid,'$product->price',$product->categoryid,'2','$product->image')";
