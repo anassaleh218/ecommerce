@@ -35,7 +35,7 @@
               <li class="nav-item submenu dropdown">
                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Shop</a>
                 <ul class="dropdown-menu">
-                  <li class="nav-item"><a class="nav-link" href="category.php">Shop Category</a></li>
+                  <li class="nav-item"><a class="nav-link" href="products.php">Shop Category</a></li>
                   <li class="nav-item"><a class="nav-link" href="single-product.php">Product Details</a></li>
                   <li class="nav-item"><a class="nav-link" href="checkout.php">Product Checkout</a></li>
                   <li class="nav-item"><a class="nav-link" href="confirmation.php">Confirmation</a></li>
