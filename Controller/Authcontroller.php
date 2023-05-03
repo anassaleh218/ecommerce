@@ -66,7 +66,7 @@ class Authcontroller
         $this->db=new DBController;
         if($this->db->openConnection())
         {
-            $query="insert into user values ('','$user->fullname','$user->username','$user->email','$user->password','$user->phone','$user->address','2')";
+            $query="insert into user values ('','$user->fullname','$user->username','$user->email','$user->password','$user->phone','$user->address','','$user->roleid')";
             $result=$this->db->insert($query);
             if($result!=false)
             {
@@ -74,7 +74,7 @@ class Authcontroller
                     session_start();
                   }
             
-                $_SESSION["id"]=$result;
+                $_SESSION["id"]=$result['id'];
                 $_SESSION["userName"]=$user->username;
                 $_SESSION["userRole"]="Client";
                 $this->db->closeConnection();
@@ -94,5 +94,22 @@ class Authcontroller
         }
     }
     
+
+    public function getRoles()
+    {
+         $this->db=new DBController;
+         if($this->db->openConnection())
+         {
+            $query="select * from role";
+            return $this->db->select($query);
+         }
+         else
+         {
+            echo "Error in Database Connection";
+            return false; 
+         }
+    }
+
+
+
 }
-?>
