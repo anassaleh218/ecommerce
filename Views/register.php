@@ -17,7 +17,7 @@ $user = new User();
 $auth = new AuthController;
 
 $roles = $auth->getRoles();
-print_r($roles);
+
 
 if (isset($_POST['fullname']) && isset($_POST['email']) && isset($_POST['password']) && isset($_POST['username']) && isset($_POST['phone']) && isset($_POST['address'])) {
 
@@ -113,34 +113,25 @@ require_once 'layout/header.php';
 
 						</div>
 
-						<legend class="col-form-label col-sm-2 pt-0">Roles</legend>
-						<div class="row-sm-10">
-							<div class="form-check">
-
-
-								<?php
-								foreach ($roles as $role) {
-								?>
-
-									<input class="form-check-input" type="radio" name="gridRadios" id="gridRadios1" value="option1" checked>
+						<legend class="col-form-label col-sm-2 pt-0">Roles:</legend>
+						<div class="row ml-5">
+							<?php
+							foreach ($roles as $role) {
+								if($role['role_name']!="admin"){
+									
+								
+							?>
+								<div class="form-check mr-5">
+									<input class="form-check-input" type="radio" name="role" id="gridRadios1" value="<?php echo $role['id'] ?>" checked>
 									<label class="form-check-label" for="gridRadios1">
-										First radio
+										<?php echo $role['role_name'] ?>
 									</label>
-
-
-								<?php
-								}
-								?>
-							</div>
+								</div>
+							<?php
+							}
+							}
+							?>
 						</div>
-
-						<!-- 						
-
-						<div class="col-md-12 form-group">
-							<input type="radio" class="form-control mb-4" id="address" name="role" >
-							<input type="radio" class="form-control mb-4" id="address" name="role" >
-
-						</div> -->
 
 						<?php
 						if ($errMsg != "") {
@@ -155,12 +146,7 @@ require_once 'layout/header.php';
 						}
 						?>
 
-
-
-
-
-
-						<div class="col-md-12 form-group">
+						<div class="col-md-12 form-group mt-4">
 							<button type="submit" value="submit" name="submitbutton" class="button button-login w-100">Register</button>
 						</div>
 
