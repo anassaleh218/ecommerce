@@ -1,10 +1,10 @@
 <?php
-require_once 'layout/header.php';
-
 require_once '../Models/admin.php';
 require_once '../Models/category.php';
 require_once '../Controller/AdminController.php';
 require_once '../Controller/ProductController.php';
+require_once '../Controller/Authcontroller.php';
+
 ?>
 
 
@@ -12,6 +12,19 @@ require_once '../Controller/ProductController.php';
 $errMsg = "";
 $adminC = new AdminController;
 $productController = new ProductController;
+
+
+///////////////////
+$auth = new AuthController;
+if($auth->getCurrentUser() != false){
+  $currentUser = $auth->getCurrentUser();
+  print_r($currentUser);
+  echo "<br />" . $auth->getUserRole();
+}else{
+  $_SESSION["errMsg"] =  "you must login or regester first";
+}
+//////////////////
+
 
 /////////// add category ///////////
 if (isset($_POST['catName'])) {
@@ -86,6 +99,11 @@ if (isset($_POST['unblockUser'])) {
 }
 /////////// End unblock user ////////
 
+?>
+
+
+<?php
+require_once 'layout/header.php';
 ?>
 <!-- ================ start banner area ================= -->
 <section class="blog-banner-area" id="category">

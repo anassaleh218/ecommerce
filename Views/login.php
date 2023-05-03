@@ -1,54 +1,46 @@
-<?php 
+<?php
 require_once '../Models/User.php';
 require_once '../Controller/Authcontroller.php';
-$errMsg="";
+$errMsg = "";
 
 // if(isset($_GET["logout"]))
 // {
 //   session_start();
 //   session_destroy();
 // }
-if(isset($_POST['username']) && isset($_POST['password']))
-{
-	
-    if(!empty($_POST['username']) && !empty($_POST['password']) )
-    {   
-		
-        $user=new User;
-        $auth=new AuthController;
-        $user->username=$_POST['username'];
-        $user->password=$_POST['password'];
-        if(!$auth->login($user))
-        {
-            if(!isset($_SESSION["id"]))
-            {
-                session_start();
-            }
-            $errMsg=$_SESSION["id"];
-        }
-        else
-        {
-            if(!isset($_SESSION["id"]))
-            {
-                session_start();
-            }
-            if($_SESSION["role_id"]=="1")
-            {
-				header("location: ../views/admin.php");
-            }
-            else
-            {
-                header("location: ../views/index.php");
-            }
+if (isset($_POST['username']) && isset($_POST['password'])) {
 
-        }
+	if (!empty($_POST['username']) && !empty($_POST['password'])) {
 
-        
-    }
-    else
-    {
-        $errMsg="Please fill all fields";
-    }
+		$user = new User;
+		$auth = new AuthController;
+		$user->username = $_POST['username'];
+		$user->password = $_POST['password'];
+		if (!$auth->login($user)) {
+			if (!isset($_SESSION["id"])) {
+				session_start();
+			}
+			$errMsg = $_SESSION["id"];
+		} else {
+			//////////
+			if ($auth->getCurrentUser() != false) {
+				$currentUser = $auth->getCurrentUser();
+				if ($auth->getUserRole() == "seller") {
+					header("location: ../views/manage-products.php");
+				} else if ($auth->getUserRole() == "admin") {
+					header("location: ../views/admin.php");
+				} else {
+					header("location: ../views/index.php");
+				}
+			} else {
+				$_SESSION["errMsg"] =  "you must login or regester first";
+			}
+			//////////
+
+		}
+	} else {
+		$errMsg = "Please fill all fields";
+	}
 }
 
 ?>

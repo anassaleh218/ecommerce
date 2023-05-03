@@ -1,7 +1,8 @@
 <?php
-require_once './layout/header.php';
 require_once '../Models/product.php';
 require_once '../Controller/ProductController.php';
+require_once '../Controller/Authcontroller.php';
+
 
 $deleteMsg = "";
 
@@ -20,6 +21,10 @@ $products = $productController->getAllProducts();
 
 ?>
 
+
+<?php
+require_once 'layout/header.php';
+?>
 <!-- ================ start banner area ================= -->
 <section class="blog-banner-area" id="category">
     <div class="container h-100">

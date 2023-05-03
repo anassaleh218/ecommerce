@@ -23,12 +23,6 @@ if (isset($_POST['fullname']) && isset($_POST['email']) && isset($_POST['passwor
 
 	if (!empty($_POST['fullname']) && !empty($_POST['email']) && !empty($_POST['password']) && !empty($_POST['username']) && !empty($_POST['address']) && !empty($_POST['phone'])) {
 
-
-
-
-
-
-
 		$user->fullname = $_POST['fullname'];
 		$user->username = $_POST['username'];
 		$user->email = $_POST['email'];
@@ -36,8 +30,22 @@ if (isset($_POST['fullname']) && isset($_POST['email']) && isset($_POST['passwor
 		$user->phone = $_POST['phone'];
 		$user->address = $_POST['address'];
 		$user->roleid = $_POST['role'];
+
 		if ($auth->register($user)) {
-			header("location: ../views/index.php");
+			//////////
+			if ($auth->getCurrentUser() != false) {
+				$currentUser = $auth->getCurrentUser();
+				if ($auth->getUserRole() == "seller") {
+					header("location: ../views/manage-products.php");
+				} else if ($auth->getUserRole() == "admin") {
+					header("location: ../views/admin.php");
+				} else {
+					header("location: ../views/index.php");
+				}
+			} else {
+				$_SESSION["errMsg"] =  "you must login or regester first";
+			}
+			//////////
 		} else {
 			$errMsg = $_SESSION["errMsg"];
 		}
@@ -117,18 +125,18 @@ require_once 'layout/header.php';
 						<div class="row ml-5">
 							<?php
 							foreach ($roles as $role) {
-								if($role['role_name']!="admin"){
-									
-								
+								if ($role['role_name'] != "admin") {
+
+
 							?>
-								<div class="form-check mr-5">
-									<input class="form-check-input" type="radio" name="role" id="gridRadios1" value="<?php echo $role['id'] ?>" checked>
-									<label class="form-check-label" for="gridRadios1">
-										<?php echo $role['role_name'] ?>
-									</label>
-								</div>
+									<div class="form-check mr-5">
+										<input class="form-check-input" type="radio" name="role" id="gridRadios1" value="<?php echo $role['id'] ?>" checked>
+										<label class="form-check-label" for="gridRadios1">
+											<?php echo $role['role_name'] ?>
+										</label>
+									</div>
 							<?php
-							}
+								}
 							}
 							?>
 						</div>
