@@ -1,22 +1,31 @@
 <?php 
 
 class User {
-  private $id;
-  private $username;
-  private $password;
-  private $fullname;
-  private $email;
-  private $phone;
+  public $id;
+  public $username;
+  public $password;
+  public $fullname;
+  public $email;
+  public $phone;
+  public $address;
+  public $roleid;
 
-  public function __construct($id, $username, $password, $fullname, $email, $phone) {
-    $this->id = $id;
-    $this->username = $username;
-    $this->password = $password;
-    $this->fullname = $fullname;
-    $this->email = $email;
-    $this->phone = $phone;
-  }
 
+
+
+  // public function __construct($id, $fullname, $username ,$email,$password, $phone,$address , $roleid) {
+  //   $this->id = $id;
+  //   $this->fullname = $fullname;
+  //   $this->username = $username;
+  //   $this->password = $password;
+  //   $this->email = $email;
+  //   $this->phone = $phone;
+  //   $this->address = $address;
+  //   $this->roleid = $roleid;
+  // }
+  
+  public function __construct (){}
+  
   public function login($username, $password) {
 
   }

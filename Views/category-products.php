@@ -59,9 +59,17 @@ if (isset($_GET["id"])) {
 
                   ?>
                     <li class="filter-list">
-                    <a target="_self" href="category-products.php?id=<?php echo $category["id"] ?>">
-                      <input class="pixel-radio" type="radio" name="categoryName" value="<?php echo $category["id"] ?>" onclick="window.location.href='category-products.php?id=<?php echo $category['id'] ?>';">
-                      <label for="<?php echo $category["name"] ?>"><?php echo $category["name"] ?><span>(<?php echo $category["categoryQuantity"] ?>)</span></label>
+                      <a target="_self" href="category-products.php?id=<?php echo $category["id"] ?>">
+                        <input class="pixel-radio" type="radio"
+                        <?php
+if ($_GET["id"]==$category["id"]) {
+?>
+  checked
+<?php
+}
+?> 
+                        name="categoryName" value="<?php echo $category["id"] ?>" onclick="window.location.href='category-products.php?id=<?php echo $category['id'] ?>';">
+                        <label for="<?php echo $category["name"] ?>"><?php echo $category["name"] ?><span>(<?php echo $category["categoryQuantity"] ?>)</span></label>
                     </li>
                     </a>
                   <?php
