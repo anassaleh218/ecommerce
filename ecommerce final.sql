@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 29, 2023 at 12:06 AM
--- Server version: 10.4.22-MariaDB
--- PHP Version: 8.1.2
+-- Generation Time: May 03, 2023 at 07:24 PM
+-- Server version: 10.4.21-MariaDB
+-- PHP Version: 8.0.10
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -29,8 +29,7 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `cart` (
   `id` int(11) NOT NULL,
-  `buyer_id` int(11) NOT NULL,
-  `product_id` int(11) NOT NULL
+  `buyer_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -55,18 +54,6 @@ CREATE TABLE `category` (
   `name` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Dumping data for table `category`
---
-
-INSERT INTO `category` (`id`, `name`) VALUES
-(1, 'cars'),
-(2, 'test'),
-(3, 'teeee'),
-(4, 'test cat'),
-(5, 'tesssst'),
-(6, 'test');
-
 -- --------------------------------------------------------
 
 --
@@ -76,15 +63,8 @@ INSERT INTO `category` (`id`, `name`) VALUES
 CREATE TABLE `order` (
   `id` int(11) NOT NULL,
   `buyer_id` int(11) NOT NULL,
-  `product_id` int(11) NOT NULL
+  `order_status` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `order`
---
-
-INSERT INTO `order` (`id`, `buyer_id`, `product_id`) VALUES
-(1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -96,14 +76,6 @@ CREATE TABLE `order_product` (
   `product_id` int(11) NOT NULL,
   `order_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `order_product`
---
-
-INSERT INTO `order_product` (`product_id`, `order_id`) VALUES
-(1, 1),
-(2, 1);
 
 -- --------------------------------------------------------
 
@@ -133,18 +105,11 @@ CREATE TABLE `product` (
   `status` varchar(20) NOT NULL,
   `color` varchar(20) NOT NULL,
   `size_id` int(11) NOT NULL,
-  `start_price` int(11) NOT NULL,
+  `start_price` float NOT NULL,
   `category_id` int(11) NOT NULL,
-  `seller_id` int(11) NOT NULL
+  `seller_id` int(11) NOT NULL,
+  `image` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `product`
---
-
-INSERT INTO `product` (`id`, `name`, `description`, `quantity`, `status`, `color`, `size_id`, `start_price`, `category_id`, `seller_id`) VALUES
-(1, 'dodo car', 'dodo car', 100, 'avl', 'red', 1, 1000, 1, 1),
-(2, 'phone', 'phone', 100, 'avl', 'red', 1, 100000000, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -156,13 +121,6 @@ CREATE TABLE `product_size` (
   `id` int(11) NOT NULL,
   `name` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `product_size`
---
-
-INSERT INTO `product_size` (`id`, `name`) VALUES
-(1, 'xxl');
 
 -- --------------------------------------------------------
 
@@ -186,13 +144,6 @@ CREATE TABLE `role` (
   `role_name` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Dumping data for table `role`
---
-
-INSERT INTO `role` (`id`, `role_name`) VALUES
-(1, 'admin');
-
 -- --------------------------------------------------------
 
 --
@@ -210,13 +161,6 @@ CREATE TABLE `user` (
   `blocked` tinyint(1) NOT NULL DEFAULT 0,
   `role_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `user`
---
-
-INSERT INTO `user` (`id`, `fullname`, `username`, `email`, `password`, `phone`, `address`, `blocked`, `role_id`) VALUES
-(1, 'dodo', 'dodo', 'dodo@dodo.dodo', 'dodo', '012011010015', 'dodo house', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -238,8 +182,7 @@ CREATE TABLE `watch_list` (
 --
 ALTER TABLE `cart`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `cart_user` (`buyer_id`),
-  ADD KEY `cart_product` (`product_id`);
+  ADD KEY `cart_user` (`buyer_id`);
 
 --
 -- Indexes for table `cart_product`
@@ -259,8 +202,7 @@ ALTER TABLE `category`
 --
 ALTER TABLE `order`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `order_buyer` (`buyer_id`),
-  ADD KEY `order_product` (`product_id`);
+  ADD KEY `order_buyer` (`buyer_id`);
 
 --
 -- Indexes for table `order_product`
@@ -333,13 +275,13 @@ ALTER TABLE `cart`
 -- AUTO_INCREMENT for table `category`
 --
 ALTER TABLE `category`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `order`
 --
 ALTER TABLE `order`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `payment`
@@ -351,25 +293,25 @@ ALTER TABLE `payment`
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `product_size`
 --
 ALTER TABLE `product_size`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `role`
 --
 ALTER TABLE `role`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables
@@ -379,7 +321,6 @@ ALTER TABLE `user`
 -- Constraints for table `cart`
 --
 ALTER TABLE `cart`
-  ADD CONSTRAINT `cart_product` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`),
   ADD CONSTRAINT `cart_user` FOREIGN KEY (`buyer_id`) REFERENCES `user` (`id`);
 
 --
@@ -393,8 +334,7 @@ ALTER TABLE `cart_product`
 -- Constraints for table `order`
 --
 ALTER TABLE `order`
-  ADD CONSTRAINT `order_buyer` FOREIGN KEY (`buyer_id`) REFERENCES `user` (`id`),
-  ADD CONSTRAINT `order_product` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`);
+  ADD CONSTRAINT `order_buyer` FOREIGN KEY (`buyer_id`) REFERENCES `user` (`id`);
 
 --
 -- Constraints for table `order_product`
