@@ -1,6 +1,7 @@
 <?php
 require_once '../Models/User.php';
-require_once '../Controller/DBController.php';
+require_once 'DBController.php';
+require_once 'CartController.php';
 
 class Authcontroller
 {
@@ -52,6 +53,8 @@ class Authcontroller
             return false;
         }
     }
+
+    
     public function register(User $user)
     {
         $this->db = new DBController;
@@ -69,6 +72,9 @@ class Authcontroller
                 $_SESSION["roleId"] = $user->roleid;
                 $_SESSION["userRole"] = "Client";
 
+                $cart = new CartController();
+                $cart->createCart($result);// create cart for the new user with id $result
+
                 $this->db->closeConnection();
                 return true;
             } else {
@@ -83,17 +89,17 @@ class Authcontroller
     }
 
 
-    // public function getRoles()
-    // {
-    //     $this->db = new DBController;
-    //     if ($this->db->openConnection()) {
-    //         $query = "select * from role";
-    //         return $this->db->select($query);
-    //     } else {
-    //         echo "Error in Database Connection";
-    //         return false;
-    //     }
-    // }
+    public function getRoles()
+    {
+        $this->db = new DBController;
+        if ($this->db->openConnection()) {
+            $query = "select * from role";
+            return $this->db->select($query);
+        } else {
+            echo "Error in Database Connection";
+            return false;
+        }
+    }
 
 
     public function getCurrentUser()
@@ -122,6 +128,67 @@ class Authcontroller
             return false;
         }
     }
+
+    // public function getUserCart(User $user)
+    // {
+    //     $this->db = new DBController;
+    //     if ($this->db->openConnection()) {
+    //         $query = "select * FROM `cart` WHERE buyer_id = '$user->id'";
+    //         $result = $this->db->select($query);
+    //         return $result[0];
+    //     } else {
+    //         echo "Error in Database Connection";
+    //         return false;
+    //     }
+    // }
+
+    // public function createCart($user_id)
+    // {
+    //     $this->db = new DBController;
+    //     if ($this->db->openConnection()) {
+    //         $query = "insert INTO `cart` (`id`, `buyer_id`) VALUES ('', '$user_id')";
+    //         $result = $this->db->insert($query);
+    //         if ($result != false) {
+    //             if (session_status() === PHP_SESSION_NONE) {
+    //                 session_start();
+    //             }
+    //             return true;
+    //         } else {
+    //             $_SESSION["errMsg"] = "Somthing went wrong... try again later";
+    //             return false;
+    //         }
+    //     } else {
+    //         echo "Error in Database Connection";
+    //         return false;
+    //     }
+    // }
+
+
+
+    // public function addToCart(User $user, $product_id)
+    // {
+    //     $this->db = new DBController;
+    //     if ($this->db->openConnection()) {
+    //         $userCart = $this->getUserCart($user); // get user cart to add product to it
+    //         $query = "insert INTO `cart_product` (`cart_id`, `product_id`) VALUES ('$userCart->id', '$product_id');";
+    //         $result = $this->db->insert($query);
+    //         if ($result != false) {
+    //             if (session_status() === PHP_SESSION_NONE) {
+    //                 session_start();
+    //             }
+    //             $this->db->closeConnection();
+    //             return true;
+    //         } else {
+    //             $_SESSION["errMsg"] = "Somthing went wrong... try again later";
+    //             $this->db->closeConnection();
+    //             return false;
+    //         }
+    //     } else {
+    //         echo "Error in Database Connection";
+    //         return false;
+    //     }
+    // }
+
 
 
 }

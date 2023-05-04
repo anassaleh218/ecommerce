@@ -16,7 +16,7 @@ $errMsg = "";
 $user = new User();
 $auth = new AuthController;
 
-// $roles = $auth->getRoles($currentUser);
+$roles = $auth->getRoles();
 
 
 if (isset($_POST['fullname']) && isset($_POST['email']) && isset($_POST['password']) && isset($_POST['username']) && isset($_POST['phone']) && isset($_POST['address'])) {

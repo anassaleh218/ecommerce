@@ -1,14 +1,79 @@
 <?php
-require_once 'layout/header.php';
+require_once '../Controller/ProductController.php';
+require_once '../Controller/CartController.php';
+require_once '../Controller/Authcontroller.php';
+
+if (session_status() === PHP_SESSION_NONE) {
+	session_start();
+}
+
+if (isset($_GET['id'])) {
+	if (!empty($_GET['id'])) {
+
+
+		$id = $_GET['id'];
+		$productController = new ProductController;
+		$auth = new AuthController;
+
+
+		if ($productController->getProductById($id)) {
+			$product = $productController->getProductById($id)[0];
+			// print_r($product);
+			if (isset($_GET['add'])) {
+				if ($auth->getCurrentUser() != false) {
+					$cart = new CartController();
+					$currentUser = $auth->getCurrentUser();
+					try {
+						$cart->addToCart($currentUser, $product["id"]);
+						echo "<div class=\"alert alert-success\" role=\"alert\">added successfully</div>";
+					} catch (Exception $e) {
+						echo "<div class=\"alert alert-success\" role=\"alert\">added successfully</div>";
+						// echo 'Message: ' . $e->getMessage();
+					}
+				} else {
+					if (session_status() === PHP_SESSION_NONE) {
+						session_start();
+					}
+					$_SESSION["errMsg"] =  "you must login or regester first";
+					header("location: ../views/login.php");
+				}
+			}
+		} else {
+			$_SESSION["errMsg"] =  "no product by this id";
+			header("location: ../views/index.php");
+		}
+	} else {
+		$_SESSION["errMsg"] =  "no product by this id";
+		header("location: ../views/index.php");
+	}
+} else {
+	$_SESSION["errMsg"] =  "no product by this id";
+	header("location: ../views/index.php");
+}
+
+
+
 ?>
 
 
+
+<?php
+require_once 'layout/header.php';
+?>
 <!-- ================ start banner area ================= -->
 <section class="blog-banner-area" id="blog">
 	<div class="container h-100">
 		<div class="blog-banner">
 			<div class="text-center">
-				<h1>Shop Single</h1>
+				<?php //if (isset($errMsg)) { 
+				?>
+				<!-- <h1><?php //echo $errMsg; 
+							?></h1> -->
+				<?php //} else {  
+				?>
+				<h1><?php echo $product["name"]; ?></h1>
+				<?php //}  
+				?>
 				<nav aria-label="breadcrumb" class="banner-breadcrumb">
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item"><a href="#">Home</a></li>
@@ -24,50 +89,46 @@ require_once 'layout/header.php';
 
 <!--================Single Product Area =================-->
 <div class="product_image_area">
-		<div class="container">
-			<div class="row s_product_inner">
-				<div class="col-lg-6">
-					<div class="owl-carousel owl-theme s_Product_carousel">
-						<div class="single-prd-item">
-							<img class="img-fluid" src="asstes/img/category/s-p1.jpg" alt="">
-						</div>
-						<!-- <div class="single-prd-item">
+	<div class="container">
+		<div class="row s_product_inner">
+			<div class="col-lg-6">
+				<div class="owl-carousel owl-theme s_Product_carousel">
+					<div class="single-prd-item">
+						<img class="img-fluid" src="<?php echo $product["image"]; ?>" alt="">
+					</div>
+					<!-- <div class="single-prd-item">
 							<img class="img-fluid" src="img/category/s-p1.jpg" alt="">
 						</div>
 						<div class="single-prd-item">
 							<img class="img-fluid" src="img/category/s-p1.jpg" alt="">
 						</div> -->
-					</div>
 				</div>
-				<div class="col-lg-5 offset-lg-1">
-					<div class="s_product_text">
-						<h3>Faded SkyBlu Denim Jeans</h3>
-						<h2>$149.99</h2>
-						<ul class="list">
-							<li><a class="active" href="#"><span>Category</span> : Household</a></li>
-							<li><a href="#"><span>Availibility</span> : In Stock</a></li>
-						</ul>
-						<p>Mill Oil is an innovative oil filled radiator with the most modern technology. If you are looking for
-							something that can make your interior look awesome, and at the same time give you the pleasant warm feeling
-							during the winter.</p>
-						<div class="product_count">
-              <label for="qty">Quantity:</label>
-              <button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
-							 class="increase items-count" type="button"><i class="ti-angle-left"></i></button>
-							<input type="text" name="qty" id="sst" size="2" maxlength="12" value="1" title="Quantity:" class="input-text qty">
-							<button onclick="var result = document.getElementById('sst'); var sst = result.value; if( false ) result.value--;return false;"
-               class="reduced items-count" type="button"><i class="ti-angle-right"></i></button>
-							<a class="button primary-btn" href="#">Add to Cart</a>               
-						</div>
-						<div class="card_area d-flex align-items-center">
-							<a class="icon_btn" href="#"><i class="lnr lnr lnr-diamond"></i></a>
-							<a class="icon_btn" href="#"><i class="lnr lnr lnr-heart"></i></a>
-						</div>
+			</div>
+			<div class="col-lg-5 offset-lg-1">
+				<div class="s_product_text">
+					<h3><?php echo $product["name"]; ?></h3>
+					<h2>$<?php echo $product["start_price"]; ?></h2>
+					<ul class="list">
+						<li><a class="active" href="#"><span>Color</span> : <?php echo $product["color"]; ?></a></li>
+						<li><a href="#"><span>Availibility</span> : <?php echo $product["status"]; ?></a></li>
+					</ul>
+					<p><?php echo $product["description"]; ?></p>
+					<div class="product_count">
+						<label for="qty">Quantity:</label>
+						<!-- <button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;" class="increase items-count" type="button"><i class="ti-angle-left"></i></button> -->
+						<input type="text" name="qty" id="sst" size="2" maxlength="12" value="1" title="Quantity:" class="input-text qty">
+						<!-- <button onclick="var result = document.getElementById('sst'); var sst = result.value; if( false ) result.value--;return false;" class="reduced items-count" type="button"><i class="ti-angle-right"></i></button> -->
+						<a class="button primary-btn" href="single-product.php?id=<?php echo $product["id"]; ?>&add">Add to Cart</a>
 					</div>
+					<!-- <div class="card_area d-flex align-items-center">
+						<a class="icon_btn" href="#"><i class="lnr lnr lnr-diamond"></i></a>
+						<a class="icon_btn" href="#"><i class="lnr lnr lnr-heart"></i></a>
+					</div> -->
 				</div>
 			</div>
 		</div>
 	</div>
+</div>
 <!--================End Single Product Area =================-->
 
 <!--================Product Description Area =================-->
@@ -77,35 +138,21 @@ require_once 'layout/header.php';
 			<li class="nav-item">
 				<a class="nav-link" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Description</a>
 			</li>
-			<li class="nav-item">
+			<!-- <li class="nav-item">
 				<a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Specification</a>
 			</li>
 			<li class="nav-item">
 				<a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Comments</a>
-			</li>
+			</li> -->
 			<li class="nav-item">
 				<a class="nav-link active" id="review-tab" data-toggle="tab" href="#review" role="tab" aria-controls="review" aria-selected="false">Reviews</a>
 			</li>
 		</ul>
 		<div class="tab-content" id="myTabContent">
 			<div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
-				<p>Beryl Cook is one of Britain’s most talented and amusing artists .Beryl’s pictures feature women of all shapes
-					and sizes enjoying themselves .Born between the two world wars, Beryl Cook eventually left Kendrick School in
-					Reading at the age of 15, where she went to secretarial school and then into an insurance office. After moving to
-					London and then Hampton, she eventually married her next door neighbour from Reading, John Cook. He was an
-					officer in the Merchant Navy and after he left the sea in 1956, they bought a pub for a year before John took a
-					job in Southern Rhodesia with a motor company. Beryl bought their young son a box of watercolours, and when
-					showing him how to use it, she decided that she herself quite enjoyed painting. John subsequently bought her a
-					child’s painting set for her birthday and it was with this that she produced her first significant work, a
-					half-length portrait of a dark-skinned lady with a vacant expression and large drooping breasts. It was aptly
-					named ‘Hangover’ by Beryl’s husband and</p>
-				<p>It is often frustrating to attempt to plan meals that are designed for one. Despite this fact, we are seeing
-					more and more recipe books and Internet websites that are dedicated to the act of cooking for one. Divorce and
-					the death of spouses or grown children leaving for college are all reasons that someone accustomed to cooking for
-					more than one would suddenly need to learn how to adjust all the cooking practices utilized before into a
-					streamlined plan of cooking that is more efficient for one person creating less</p>
+				<p><?php echo $product["description"]; ?></p>
 			</div>
-			<div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+			<!-- <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
 				<div class="table-responsive">
 					<table class="table">
 						<tbody>
@@ -259,11 +306,11 @@ require_once 'layout/header.php';
 						</div>
 					</div>
 				</div>
-			</div>
+			</div> -->
 			<div class="tab-pane fade show active" id="review" role="tabpanel" aria-labelledby="review-tab">
 				<div class="row">
 					<div class="col-lg-6">
-						<div class="row total_rate">
+						<!-- <div class="row total_rate">
 							<div class="col-6">
 								<div class="box_total">
 									<h5>Overall</h5>
@@ -283,7 +330,7 @@ require_once 'layout/header.php';
 									</ul>
 								</div>
 							</div>
-						</div>
+						</div> -->
 						<div class="review_list">
 							<div class="review_item">
 								<div class="media">
@@ -364,7 +411,7 @@ require_once 'layout/header.php';
 									<input class="form-control" name="subject" type="text" placeholder="Enter Subject">
 								</div>
 								<div class="form-group">
-									<textarea class="form-control different-control w-100" name="textarea" id="textarea" cols="30" rows="5" placeholder="Enter Message"></textarea>
+									<textarea class="form-control  w-100" name="textarea" id="textarea" cols="30" rows="5" placeholder="Enter Message"></textarea>
 								</div>
 								<div class="form-group text-center text-md-right mt-3">
 									<button type="submit" class="button button--active button-review">Submit Now</button>
@@ -380,7 +427,7 @@ require_once 'layout/header.php';
 <!--================End Product Description Area =================-->
 
 <!--================ Start related Product area =================-->
-<section class="related-product-area section-margin--small mt-0">
+<!-- <section class="related-product-area section-margin--small mt-0">
 	<div class="container">
 		<div class="section-intro pb-60px">
 			<p>Popular Item in the market</p>
@@ -492,7 +539,7 @@ require_once 'layout/header.php';
 			</div>
 		</div>
 	</div>
-</section>
+</section> -->
 <!--================ end related Product area =================-->
 
 

@@ -4,6 +4,7 @@ require_once '../Models/category.php';
 require_once '../Controller/AdminController.php';
 require_once '../Controller/ProductController.php';
 require_once '../Controller/Authcontroller.php';
+require_once '../Controller/CartController.php';
 
 ?>
 
@@ -16,17 +17,18 @@ $productController = new ProductController;
 
 //// check if user is login and admin /////
 $auth = new AuthController;
+
 if ($auth->getCurrentUser() != false) {
   $currentUser = $auth->getCurrentUser();
   if($auth->getUserRole($currentUser) != "admin"){
-    if (!isset($_SESSION["errMsg"])) {
+    if (session_status() === PHP_SESSION_NONE) {
       session_start();
     }
     $_SESSION["errMsg"] =  "you must be Admin";
     header("location: ../views/login.php");
   }
 } else {
-  if (!isset($_SESSION["errMsg"])) {
+  if (session_status() === PHP_SESSION_NONE) {
     session_start();
   }
   $_SESSION["errMsg"] =  "you must login or regester first";
