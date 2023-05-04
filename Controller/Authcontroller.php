@@ -5,9 +5,7 @@ require_once '../Controller/DBController.php';
 class Authcontroller
 {
     public $db;
-    //1.open connection 
-    //2.run query 
-    //3. close connection 
+
 
     public function login(User $user)
     {
@@ -23,14 +21,18 @@ class Authcontroller
             } else {
                 if (count($result) == 0) {
 
-                    session_start();
+                    if (session_status() === PHP_SESSION_NONE) {
+                        session_start();
+                    }
                     $_SESSION["errMsg"] = "You have entered wrong email or password";
                     $this->db->closeConnection();
                     return false;
                 } else {
 
                     $myUser = new User();
-                    session_start();
+                    if (session_status() === PHP_SESSION_NONE) {
+                        session_start();
+                    }
                     $_SESSION["id"] = $result[0]["id"];
                     $_SESSION["userName"] = $result[0]["username"];
                     $_SESSION["roleId"] = $result[0]["role_id"];
@@ -81,23 +83,22 @@ class Authcontroller
     }
 
 
-    public function getRoles()
-    {
-        $this->db = new DBController;
-        if ($this->db->openConnection()) {
-            $query = "select * from role";
-            return $this->db->select($query);
-        } else {
-            echo "Error in Database Connection";
-            return false;
-        }
-    }
+    // public function getRoles()
+    // {
+    //     $this->db = new DBController;
+    //     if ($this->db->openConnection()) {
+    //         $query = "select * from role";
+    //         return $this->db->select($query);
+    //     } else {
+    //         echo "Error in Database Connection";
+    //         return false;
+    //     }
+    // }
 
 
     public function getCurrentUser()
     {
-
-        if (!isset($_SESSION["id"])) {
+        if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
         if (isset($_SESSION["id"]) && isset($_SESSION["fullName"]) && isset($_SESSION["userName"]) && isset($_SESSION["roleId"])) {
@@ -109,11 +110,10 @@ class Authcontroller
         }
     }
 
-    public function getUserRole()
+    public function getUserRole(User $user)
     {
         $this->db = new DBController;
         if ($this->db->openConnection()) {
-            $user = $this->getCurrentUser();
             $query = "select role_name from role where id = '$user->roleid'";
             $result = $this->db->select($query);
             return $result[0]['role_name'];
@@ -122,4 +122,6 @@ class Authcontroller
             return false;
         }
     }
+
+
 }

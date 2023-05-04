@@ -5,11 +5,7 @@ require_once 'DBController.php';
 class AdminController
 {
     protected $db;
-
-    //1. Open connection.
-    //2. Run query & logic.
-    //3. Close connection
-    /////
+    
     public function addCategory(Category $cat)
     {
         $this->db=new DBController;
@@ -116,5 +112,3 @@ class AdminController
 
 
 }
-
-?>

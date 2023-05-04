@@ -17,10 +17,6 @@ class User {
     $this->id = $id;
     $this->fullname = $fullname;
     $this->username = $username;
-    // $this->password = $password;
-    // $this->email = $email;
-    // $this->phone = $phone;
-    // $this->address = $address;
     $this->roleid = $roleid;
   }
 

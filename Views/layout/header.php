@@ -68,7 +68,7 @@
             </ul>
 
             <ul class="nav-shop">
-              <li class="nav-item"><button><a href="category.php"><i class="ti-search"></i></a></button></li>
+              <li class="nav-item"><button><a href="products.php"><i class="ti-search"></i></a></button></li>
               <li class="nav-item"><button><a href="cart.php"><i class="ti-shopping-cart"></i><span class="nav-shop__circle">3</span></a></button> </li>
               <li class="nav-item"><a class="button button-header" href="#">Buy Now</a></li>
             </ul>

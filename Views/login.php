@@ -3,13 +3,17 @@ require_once '../Models/User.php';
 require_once '../Controller/Authcontroller.php';
 $errMsg = "";
 
-// if(isset($_GET["logout"]))
-// {
-//   session_start();
-//   session_destroy();
-// }
-if (isset($_POST['username']) && isset($_POST['password'])) {
 
+if (!isset($_SESSION["errMsg"])) {
+	session_start();
+	if (isset($_SESSION["errMsg"])) {
+		echo "<div class=\"alert alert-danger\" role=\"alert\">" . $_SESSION["errMsg"] . "</div>";
+	}
+	session_destroy();
+}
+
+
+if (isset($_POST['username']) && isset($_POST['password'])) {
 	if (!empty($_POST['username']) && !empty($_POST['password'])) {
 
 		$user = new User;
@@ -20,14 +24,17 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
 			if (!isset($_SESSION["id"])) {
 				session_start();
 			}
-			$errMsg = $_SESSION["id"];
+			echo $_SESSION["errMsg"];
+			// $errMsg = $_SESSION["id"];
+
+
 		} else {
 			//////////
 			if ($auth->getCurrentUser() != false) {
 				$currentUser = $auth->getCurrentUser();
-				if ($auth->getUserRole() == "seller") {
+				if ($auth->getUserRole($currentUser) == "seller") {
 					header("location: ../views/manage-products.php");
-				} else if ($auth->getUserRole() == "admin") {
+				} else if ($auth->getUserRole($currentUser) == "admin") {
 					header("location: ../views/admin.php");
 				} else {
 					header("location: ../views/index.php");
