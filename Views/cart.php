@@ -45,8 +45,9 @@ if (isset($_GET['add'])) {
         $orderId=$order->createOrder($currentUser->id);
         $order->addToOrder($orderId,$cartItems);
         // $_SESSION["orderid"] =$orderId;
-        // header("Location: checkout.php");
-        echo "<div class=\"alert alert-success\" role=\"alert\">order created successfully</div>";
+        header("Location: checkout.php?orderid=".$orderId);
+        // echo $orderId;
+        // echo "<div class=\"alert alert-success\" role=\"alert\">order created successfully</div>";
     } catch (Exception $e) {
         echo "<div class=\"alert alert-success\" role=\"alert\">order not created successfully</div>";
         // echo 'Message: ' . $e->getMessage();
@@ -273,7 +274,8 @@ require_once 'layout/header.php';
                             <td>
                                 <div class="checkout_btn_inner d-flex align-items-center">
                                     <a class="gray_btn" href="index.php">Continue Shopping</a>
-                                    <a class="primary-btn ml-2" href="./checkout.php?orderid=<?php echo $orderId;?>&add">Proceed to checkout</a>
+                                    <!-- <a class="primary-btn ml-2" href="./checkout.php?orderid=<?php //echo $orderId;?>&add">Proceed to checkout</a> -->
+                                    <a class="primary-btn ml-2" href="cart.php?add">Proceed to checkout</a>
                                 </div>
                             </td>
                         </tr>
