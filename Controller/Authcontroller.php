@@ -75,6 +75,9 @@ class Authcontroller
                 $cart = new CartController();
                 $cart->createCart($result);// create cart for the new user with id $result
 
+                // $order = new OrderController();
+                // $order->createOrder($result);// create order for the new user with id $result
+
                 $this->db->closeConnection();
                 return true;
             } else {

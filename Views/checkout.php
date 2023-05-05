@@ -1,4 +1,33 @@
 <?php
+require_once '../Controller/ProductController.php';
+require_once '../Controller/CartController.php';
+require_once '../Controller/Authcontroller.php';
+require_once '../Controller/OrderController.php';
+
+
+if (session_status() === PHP_SESSION_NONE) {
+  session_start();
+}
+
+
+if (isset($_GET['orderid'])) {
+  if (!empty($_GET['orderid'])) {
+
+
+    $orderId = $_GET['orderid'];
+
+    $order=new OrderController;
+    $orderItems=$order->getOrderItems($orderId);
+    $orderSubtotal=$order->getOrderProductsSubtotal($orderId)[0]['subtotal'];
+
+  }
+}
+
+?>
+
+
+
+<?php
 require_once 'layout/header.php';
 ?>
 
@@ -12,6 +41,7 @@ require_once 'layout/header.php';
         <nav aria-label="breadcrumb" class="banner-breadcrumb">
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <?php print_r($orderItems) ?>
             <li class="breadcrumb-item active" aria-current="page">Checkout</li>
           </ol>
         </nav>
@@ -25,7 +55,7 @@ require_once 'layout/header.php';
 <!--================Checkout Area =================-->
 <section class="checkout_area section-margin--small">
   <div class="container">
-    <div class="returning_customer">
+    <!-- <div class="returning_customer">
       <div class="check_title">
         <h2>Returning Customer? <a href="#">Click here to login</a></h2>
       </div>
@@ -34,11 +64,11 @@ require_once 'layout/header.php';
       <form class="row contact_form" action="#" method="post" novalidate="novalidate">
         <div class="col-md-6 form-group p_star">
           <input type="text" class="form-control" placeholder="Username or Email*" onfocus="this.placeholder=''" onblur="this.placeholder = 'Username or Email*'" id="name" name="name">
-          <!-- <span class="placeholder" data-placeholder="Username or Email"></span> -->
+          
         </div>
         <div class="col-md-6 form-group p_star">
           <input type="password" class="form-control" placeholder="Password*" onfocus="this.placeholder=''" onblur="this.placeholder = 'Password*'" id="password" name="password">
-          <!-- <span class="placeholder" data-placeholder="Password"></span> -->
+           
         </div>
         <div class="col-md-12 form-group">
           <button type="submit" value="submit" class="button button-login">login</button>
@@ -49,14 +79,14 @@ require_once 'layout/header.php';
           <a class="lost_pass" href="#">Lost your password?</a>
         </div>
       </form>
-    </div>
-    <div class="cupon_area">
+    </div> -->
+    <!-- <div class="cupon_area">
       <div class="check_title">
         <h2>Have a coupon? <a href="#">Click here to enter your code</a></h2>
       </div>
       <input type="text" placeholder="Enter coupon code">
       <a class="button button-coupon" href="#">Apply Coupon</a>
-    </div>
+    </div> -->
     <div class="billing_details">
       <div class="row">
         <div class="col-lg-8">
@@ -133,12 +163,14 @@ require_once 'layout/header.php';
               <li><a href="#">
                   <h4>Product <span>Total</span></h4>
                 </a></li>
-              <li><a href="#">Fresh Blackberry <span class="middle">x 02</span> <span class="last">$720.00</span></a></li>
-              <li><a href="#">Fresh Tomatoes <span class="middle">x 02</span> <span class="last">$720.00</span></a></li>
-              <li><a href="#">Fresh Brocoli <span class="middle">x 02</span> <span class="last">$720.00</span></a></li>
+                <?php
+                foreach($orderItems as $item){
+                ?>
+              <li><a><?php echo $item['name'] ?><span class="middle">x <?php echo $item['quantity'] ?></span> <span class="last">$ <?php echo $item['total_price'] ?></span></a></li>
+            <?php } ?>  
             </ul>
             <ul class="list list_2">
-              <li><a href="#">Subtotal <span>$2160.00</span></a></li>
+              <li><a href="#">Subtotal <span>$ <?php echo $orderSubtotal ?></span></a></li>
               <li><a href="#">Shipping <span>Flat rate: $50.00</span></a></li>
               <li><a href="#">Total <span>$2210.00</span></a></li>
             </ul>
@@ -167,7 +199,7 @@ require_once 'layout/header.php';
               <a href="#">terms & conditions*</a>
             </div>
             <div class="text-center">
-              <a class="button button-paypal" href="#">Proceed to Paypal</a>
+              <a class="button button-paypal" href="./confirmation.php?orderid=<?php echo $orderId;?>">Proceed to Paypal</a>
             </div>
           </div>
         </div>
