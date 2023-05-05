@@ -3,9 +3,28 @@ require_once '../Models/product.php';
 require_once '../Controller/ProductController.php';
 require_once '../Controller/Authcontroller.php';
 
+//// check if user is login and seller /////
+$auth = new AuthController;
+if ($auth->getCurrentUser() != false) {
+  $currentUser = $auth->getCurrentUser();
+  if($auth->getUserRole($currentUser) != "seller"){
+    if (!isset($_SESSION["errMsg"])) {
+      session_start();
+    }
+    $_SESSION["errMsg"] =  "you must be Seller";
+    header("location: ../views/login.php");
+  }
+} else {
+  if (!isset($_SESSION["errMsg"])) {
+    session_start();
+  }
+  $_SESSION["errMsg"] =  "you must login or regester first";
+  header("location: ../views/login.php");
+}
+/////////////////////////////////////////
+
 
 $deleteMsg = "";
-
 $productController = new ProductController;
 
 if (isset($_POST['delete'])) {

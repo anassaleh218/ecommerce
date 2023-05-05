@@ -35,9 +35,9 @@ if (isset($_POST['fullname']) && isset($_POST['email']) && isset($_POST['passwor
 			//////////
 			if ($auth->getCurrentUser() != false) {
 				$currentUser = $auth->getCurrentUser();
-				if ($auth->getUserRole() == "seller") {
+				if ($auth->getUserRole($currentUser) == "seller") {
 					header("location: ../views/manage-products.php");
-				} else if ($auth->getUserRole() == "admin") {
+				} else if ($auth->getUserRole($currentUser) == "admin") {
 					header("location: ../views/admin.php");
 				} else {
 					header("location: ../views/index.php");

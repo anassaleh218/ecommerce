@@ -1,11 +1,35 @@
 <?php
-require_once './layout/header.php';
 require_once '../Models/product.php';
 require_once '../Controller/ProductController.php';
+require_once '../Controller/Authcontroller.php';
+
+//// check if user is login and seller /////
+$auth = new AuthController;
+if ($auth->getCurrentUser() != false) {
+  $currentUser = $auth->getCurrentUser();
+  if ($auth->getUserRole($currentUser) != "seller") {
+    if (session_status() == PHP_SESSION_NONE) {
+      session_start();
+    }
+    $_SESSION["errMsg"] =  "you must be Seller";
+    header("location: ../views/login.php");
+  }
+} else {
+  if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+  }
+  $_SESSION["errMsg"] =  "you must login or regester first";
+  header("location: ../views/login.php");
+}
+/////////////////////////////////////////
+
 
 $productController = new ProductController;
 $categories = $productController->getCategories();
 $sizes = $productController->getSizes();
+
+
+
 
 $errMsg = "";
 
@@ -21,7 +45,7 @@ if (isset($_POST['name']) && isset($_POST['category']) && isset($_POST['size']) 
       $product->image = $location;
       if ($productController->addProduct($product)) {
         // header("location: manage-products.php");
-        echo("<script>location.href = 'http://localhost/ecommerce/views/manage-products.php';</script>");
+        echo ("<script>location.href = 'http://localhost/ecommerce/views/manage-products.php';</script>");
       } else {
         $errMsg = "Something went wrong... try again";
       }
@@ -35,6 +59,10 @@ if (isset($_POST['name']) && isset($_POST['category']) && isset($_POST['size']) 
 
 
 
+?>
+
+<?php
+require_once './layout/header.php';
 ?>
 <!-- ================ start banner area ================= -->
 <section class="blog-banner-area" id="category">
@@ -151,7 +179,7 @@ if ($errMsg != "") {
           <label for="formFileMultiple" class="form-label">Add Product Photos</label>
           <input class="form-control" type="file" name="img" id="formFileMultiple" multiple>
         </div>
-        
+
         <!--
           <div class="form-row">
             <div class="form-group col-md-6">

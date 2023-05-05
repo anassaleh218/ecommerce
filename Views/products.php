@@ -176,7 +176,7 @@ onclick="window.location.href='category-products.php?id=<?php echo $category['id
                   </div>
                   <div class="card-body">
                     <p><?php echo $product['category'] ?></p>
-                    <h4 class="card-product__title"><a href="#"><?php echo $product['name'] ?></a></h4>
+                    <h4 class="card-product__title"><a href="single-product.php?id=<?php echo $product['id'] ?>"><?php echo $product['name'] ?></a></h4>
                     <p class="card-product__price">$<?php echo $product['price'] ?></p>
                   </div>
                 </div>

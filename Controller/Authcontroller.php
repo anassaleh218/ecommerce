@@ -1,13 +1,12 @@
 <?php
 require_once '../Models/User.php';
-require_once '../Controller/DBController.php';
+require_once 'DBController.php';
+require_once 'CartController.php';
 
 class Authcontroller
 {
     public $db;
-    //1.open connection 
-    //2.run query 
-    //3. close connection 
+
 
     public function login(User $user)
     {
@@ -23,14 +22,18 @@ class Authcontroller
             } else {
                 if (count($result) == 0) {
 
-                    session_start();
+                    if (session_status() === PHP_SESSION_NONE) {
+                        session_start();
+                    }
                     $_SESSION["errMsg"] = "You have entered wrong email or password";
                     $this->db->closeConnection();
                     return false;
                 } else {
 
                     $myUser = new User();
-                    session_start();
+                    if (session_status() === PHP_SESSION_NONE) {
+                        session_start();
+                    }
                     $_SESSION["id"] = $result[0]["id"];
                     $_SESSION["userName"] = $result[0]["username"];
                     $_SESSION["roleId"] = $result[0]["role_id"];
@@ -50,6 +53,8 @@ class Authcontroller
             return false;
         }
     }
+
+    
     public function register(User $user)
     {
         $this->db = new DBController;
@@ -66,6 +71,9 @@ class Authcontroller
                 $_SESSION["fullName"] = $user->fullname;
                 $_SESSION["roleId"] = $user->roleid;
                 $_SESSION["userRole"] = "Client";
+
+                $cart = new CartController();
+                $cart->createCart($result);// create cart for the new user with id $result
 
                 $this->db->closeConnection();
                 return true;
@@ -96,8 +104,7 @@ class Authcontroller
 
     public function getCurrentUser()
     {
-
-        if (!isset($_SESSION["id"])) {
+        if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
         if (isset($_SESSION["id"]) && isset($_SESSION["fullName"]) && isset($_SESSION["userName"]) && isset($_SESSION["roleId"])) {
@@ -109,11 +116,10 @@ class Authcontroller
         }
     }
 
-    public function getUserRole()
+    public function getUserRole(User $user)
     {
         $this->db = new DBController;
         if ($this->db->openConnection()) {
-            $user = $this->getCurrentUser();
             $query = "select role_name from role where id = '$user->roleid'";
             $result = $this->db->select($query);
             return $result[0]['role_name'];
@@ -122,4 +128,67 @@ class Authcontroller
             return false;
         }
     }
+
+    // public function getUserCart(User $user)
+    // {
+    //     $this->db = new DBController;
+    //     if ($this->db->openConnection()) {
+    //         $query = "select * FROM `cart` WHERE buyer_id = '$user->id'";
+    //         $result = $this->db->select($query);
+    //         return $result[0];
+    //     } else {
+    //         echo "Error in Database Connection";
+    //         return false;
+    //     }
+    // }
+
+    // public function createCart($user_id)
+    // {
+    //     $this->db = new DBController;
+    //     if ($this->db->openConnection()) {
+    //         $query = "insert INTO `cart` (`id`, `buyer_id`) VALUES ('', '$user_id')";
+    //         $result = $this->db->insert($query);
+    //         if ($result != false) {
+    //             if (session_status() === PHP_SESSION_NONE) {
+    //                 session_start();
+    //             }
+    //             return true;
+    //         } else {
+    //             $_SESSION["errMsg"] = "Somthing went wrong... try again later";
+    //             return false;
+    //         }
+    //     } else {
+    //         echo "Error in Database Connection";
+    //         return false;
+    //     }
+    // }
+
+
+
+    // public function addToCart(User $user, $product_id)
+    // {
+    //     $this->db = new DBController;
+    //     if ($this->db->openConnection()) {
+    //         $userCart = $this->getUserCart($user); // get user cart to add product to it
+    //         $query = "insert INTO `cart_product` (`cart_id`, `product_id`) VALUES ('$userCart->id', '$product_id');";
+    //         $result = $this->db->insert($query);
+    //         if ($result != false) {
+    //             if (session_status() === PHP_SESSION_NONE) {
+    //                 session_start();
+    //             }
+    //             $this->db->closeConnection();
+    //             return true;
+    //         } else {
+    //             $_SESSION["errMsg"] = "Somthing went wrong... try again later";
+    //             $this->db->closeConnection();
+    //             return false;
+    //         }
+    //     } else {
+    //         echo "Error in Database Connection";
+    //         return false;
+    //     }
+    // }
+
+
+
 }

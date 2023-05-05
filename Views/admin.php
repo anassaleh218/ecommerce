@@ -4,6 +4,7 @@ require_once '../Models/category.php';
 require_once '../Controller/AdminController.php';
 require_once '../Controller/ProductController.php';
 require_once '../Controller/Authcontroller.php';
+require_once '../Controller/CartController.php';
 
 ?>
 
@@ -14,16 +15,26 @@ $adminC = new AdminController;
 $productController = new ProductController;
 
 
-///////////////////
+//// check if user is login and admin /////
 $auth = new AuthController;
-if($auth->getCurrentUser() != false){
+
+if ($auth->getCurrentUser() != false) {
   $currentUser = $auth->getCurrentUser();
-  print_r($currentUser);
-  echo "<br />" . $auth->getUserRole();
-}else{
+  if($auth->getUserRole($currentUser) != "admin"){
+    if (session_status() === PHP_SESSION_NONE) {
+      session_start();
+    }
+    $_SESSION["errMsg"] =  "you must be Admin";
+    header("location: ../views/login.php");
+  }
+} else {
+  if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+  }
   $_SESSION["errMsg"] =  "you must login or regester first";
+  header("location: ../views/login.php");
 }
-//////////////////
+/////////////////////////////////////////
 
 
 /////////// add category ///////////
@@ -110,7 +121,7 @@ require_once 'layout/header.php';
   <div class="container h-100">
     <div class="blog-banner">
       <div class="text-center">
-      <h1>Admin</h1>
+        <h1>Admin</h1>
         <nav aria-label="breadcrumb" class="banner-breadcrumb">
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="#">Home</a></li>
@@ -129,7 +140,7 @@ require_once 'layout/header.php';
 <section class="cart_area">
   <div class="container">
     <div class="col-6 mx-auto">
-    <h2 class="mb-2">Manage Category:</h2>
+      <h2 class="mb-2">Manage Category:</h2>
 
       <?php
 
@@ -148,33 +159,47 @@ require_once 'layout/header.php';
         </div>
         <button type="submit" class="btn btn-primary">Add</button>
       </form>
-
       <?php
       if ($productController->getCategories()) {
         $categories = $productController->getCategories();
       ?>
-        <ul class="list-group mt-3">
-          <li href="#" class="list-group-item list-group-item-secondary"><b>All Categories</b></li>
-          <?php
+        <div class="mt-5">
+          <h4 class="table m-0">All Categories</h4>
+          <table class="table ">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Name</th>
+                <th scope="col-2">Delete</th>
+              </tr>
+            </thead>
+            <tbody>
 
-          foreach ($categories as $category) {
-          ?>
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-              <?php echo $category['id'] . ": " . $category['name'] ?>
-              <form method="post" action="admin.php">
-                <input type="hidden" class="form-control" name="catId" value="<?php echo $category['id'] ?>">
-                <span class="badge rounded-pill"><button type="submit" class="btn btn-primary">delete</button></span>
-              </form>
+              <?php
 
-            </li>
+              foreach ($categories as $category) {
+              ?>
+                <tr>
+                  <th><?php echo $category['id'] ?></th>
+                  <td><?php echo $category['name'] ?></td>
+                  <td>
+                    <form method="post" action="admin.php">
+                      <input type="hidden" class="form-control" name="catId" value="<?php echo $category['id'] ?>">
+                      <span class="badge rounded-pill"><button type="submit" class="btn btn-primary">delete</button></span>
+                    </form>
+                  </td>
+                </tr>
 
-          <?php
-          }
-          ?>
-        </ul>
+              <?php
+              }
+              ?>
+            </tbody>
+          </table>
+        </div>
       <?php
       }
       ?>
+
     </div>
   </div>
 
@@ -187,9 +212,9 @@ require_once 'layout/header.php';
 <hr />
 <!--================Cart Area =================-->
 <section class="cart_area">
-<div class="container">
+  <div class="container">
     <div class="col-6 mx-auto">
-    <h2 class="mb-2">Manage Users:</h2>
+      <h2 class="mb-2">Manage Users:</h2>
 
       <form method="post" action="admin.php">
         <div class="form-group">
@@ -200,33 +225,53 @@ require_once 'layout/header.php';
       </form>
 
 
+
       <?php
       if ($adminC->getBlockUsers()) {
         $blockedUsers = $adminC->getBlockUsers();
       ?>
-        <ul class="list-group mt-3">
-          <li href="#" class="list-group-item list-group-item-secondary"><b>Blocked users</b></li>
-          <?php
+        <div class="mt-5">
+          <h4 class="table m-0">All Blocked users</h4>
+          <table class="table ">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Full Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Unblock</th>
+              </tr>
+            </thead>
+            <tbody>
 
-          foreach ($blockedUsers as $user) {
-          ?>
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-              <?php echo " Name: " . $user['fullname'] . " / Email: " . $user['email'] ?>
-              <form method="post" action="admin.php">
-                <input type="hidden" class="form-control" name="unblockUser" value="<?php echo $user['email'] ?>">
-                <span class="badge rounded-pill"><button type="submit" class="btn btn-primary">unblock</button></span>
-              </form>
+              <?php
 
-            </li>
+              foreach ($blockedUsers as $user) {
+              ?>
+                <tr>
+                  <th><?php echo $user['id'] ?></th>
+                  <td><?php echo $user['fullname'] ?></td>
+                  <td><?php echo $user['email'] ?></td>
+                  <td>
+                    <!-- <form method="post" action="admin.php">
+                      <input type="hidden" class="form-control" name="catId" value="<?php echo $category['id'] ?>">
+                      <span class="badge rounded-pill"><button type="submit" class="btn btn-primary">delete</button></span>
+                    </form> -->
+                    <form method="post" action="admin.php">
+                      <input type="hidden" class="form-control" name="unblockUser" value="<?php echo $user['email'] ?>">
+                      <span class="badge rounded-pill"><button type="submit" class="btn btn-primary">unblock</button></span>
+                    </form>
+                  </td>
+                </tr>
 
-          <?php
-          }
-          ?>
-        </ul>
+              <?php
+              }
+              ?>
+            </tbody>
+          </table>
+        </div>
       <?php
       }
       ?>
-
 
     </div>
   </div>

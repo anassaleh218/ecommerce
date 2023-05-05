@@ -1,3 +1,16 @@
+<?php 
+if (!isset($_SESSION["errMsg"])) {
+	session_start();
+	if (isset($_SESSION["errMsg"])) {
+		echo "<div class=\"alert alert-danger\" role=\"alert\">" . $_SESSION["errMsg"] . "</div>";
+    unset($_SESSION['errMsg']);
+
+	}
+	// session_destroy();
+}
+?>
+
+
 <?php
 require_once 'layout/header.php';
 ?>
