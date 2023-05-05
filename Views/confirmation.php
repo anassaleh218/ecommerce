@@ -1,4 +1,31 @@
 <?php
+require_once '../Controller/ProductController.php';
+require_once '../Controller/CartController.php';
+require_once '../Controller/Authcontroller.php';
+require_once '../Controller/OrderController.php';
+
+
+if (session_status() === PHP_SESSION_NONE) {
+  session_start();
+}
+
+
+if (isset($_GET['orderid'])) {
+  if (!empty($_GET['orderid'])) {
+
+
+    $orderId = $_GET['orderid'];
+
+    $order=new OrderController;
+    $orderItems=$order->getOrderItems($orderId);
+    $orderSubtotal=$order->getOrderProductsSubtotal($orderId)[0]['subtotal'];
+  }
+}
+
+?>
+
+
+<?php
 require_once 'layout/header.php';
 ?>
 
@@ -32,7 +59,7 @@ require_once 'layout/header.php';
           <table class="order-rable">
             <tr>
               <td>Order number</td>
-              <td>: 60235</td>
+              <td>: <?php echo $orderId?></td>
             </tr>
             <tr>
               <td>Date</td>
@@ -40,7 +67,7 @@ require_once 'layout/header.php';
             </tr>
             <tr>
               <td>Total</td>
-              <td>: USD 2210</td>
+              <td>: $<?php echo $orderSubtotal?></td>
             </tr>
             <tr>
               <td>Payment method</td>
@@ -108,39 +135,21 @@ require_once 'layout/header.php';
             </tr>
           </thead>
           <tbody>
+          <?php
+                foreach($orderItems as $item){
+                ?>
             <tr>
               <td>
-                <p>Pixelstore fresh Blackberry</p>
+                <p><?php echo $item['name'] ?></p>
               </td>
               <td>
-                <h5>x 02</h5>
+                <h5>x <?php echo $item['quantity'] ?></h5>
               </td>
               <td>
-                <p>$720.00</p>
+                <p>$ <?php echo $item['total_price'] ?></p>
               </td>
             </tr>
-            <tr>
-              <td>
-                <p>Pixelstore fresh Blackberry</p>
-              </td>
-              <td>
-                <h5>x 02</h5>
-              </td>
-              <td>
-                <p>$720.00</p>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <p>Pixelstore fresh Blackberry</p>
-              </td>
-              <td>
-                <h5>x 02</h5>
-              </td>
-              <td>
-                <p>$720.00</p>
-              </td>
-            </tr>
+<?php }?>
             <tr>
               <td>
                 <h4>Subtotal</h4>
@@ -149,7 +158,7 @@ require_once 'layout/header.php';
                 <h5></h5>
               </td>
               <td>
-                <p>$2160.00</p>
+                <p>$ <?php echo $orderSubtotal ?></p>
               </td>
             </tr>
             <tr>

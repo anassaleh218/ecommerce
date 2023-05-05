@@ -20,6 +20,20 @@ class CartController
         }
     }
 
+
+    public function getCartId($currUser)
+    {
+        $this->db = new DBController;
+        if ($this->db->openConnection()) {
+            $query = "select id FROM `cart` WHERE buyer_id = '$currUser'";
+            $result = $this->db->select($query);
+            return $result;
+        } else {
+            echo "Error in Database Connection";
+            return false;
+        }
+    }
+
     public function createCart($user_id)
     {
         $this->db = new DBController;
@@ -93,5 +107,19 @@ class CartController
           return false;
        }
     }
+
+    // testing
+    public function emptyingCart($cartId)
+    {
+       $this->db = new DBController;
+       if ($this->db->openConnection()) {
+          $query = "delete from cart_product where cart_id='$cartId'";
+          return $this->db->delete($query);
+       } else {
+          echo "Error in Database Connection";
+          return false;
+       }
+    }
+
 
 }
