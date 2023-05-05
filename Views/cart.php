@@ -33,6 +33,10 @@ if ($auth->getCurrentUser() != false) {
 }
 ///////////////////////////////////
 
+// open cart when press on "procceed checkout"
+// create order in the cart page add fill with the items in the cart
+// in the checkout page get orderid which is created and getting this order data
+
 if (isset($_GET['add'])) {
 
     $order= new OrderController;
@@ -55,7 +59,7 @@ if (isset($_GET['add'])) {
 }
 
 
-$orderId=$order->createOrder($currentUser->id);
+// $orderId=$order->createOrder($currentUser->id);
 
 ?>
 
