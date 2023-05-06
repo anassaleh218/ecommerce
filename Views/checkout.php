@@ -16,10 +16,9 @@ if (isset($_GET['orderid'])) {
 
     $orderId = $_GET['orderid'];
 
-    $order=new OrderController;
-    $orderItems=$order->getOrderItems($orderId);
-    $orderSubtotal=$order->getOrderProductsSubtotal($orderId)[0]['subtotal'];
-
+    $order = new OrderController;
+    $orderItems = $order->getOrderItems($orderId);
+    $orderSubtotal = $order->getOrderProductsSubtotal($orderId)[0]['subtotal'];
   }
 }
 
@@ -41,7 +40,6 @@ require_once 'layout/header.php';
         <nav aria-label="breadcrumb" class="banner-breadcrumb">
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="#">Home</a></li>
-            <?php print_r($orderItems) ?>
             <li class="breadcrumb-item active" aria-current="page">Checkout</li>
           </ol>
         </nav>
@@ -93,31 +91,63 @@ require_once 'layout/header.php';
           <h3>Billing Details</h3>
           <form class="row contact_form" action="#" method="post" novalidate="novalidate">
             <div class="col-md-6 form-group p_star">
-              <input type="text" class="form-control" id="first" name="name">
-              <span class="placeholder" data-placeholder="First name"></span>
+              <label class="form-label">Flat No.</label>
+              <input type="text" class="form-control" name="flat">
             </div>
             <div class="col-md-6 form-group p_star">
-              <input type="text" class="form-control" id="last" name="name">
-              <span class="placeholder" data-placeholder="Last name"></span>
-            </div>
-            <div class="col-md-12 form-group">
-              <input type="text" class="form-control" id="company" name="company" placeholder="Company name">
+              <label class="form-label">Building No.</label>
+              <input type="text" class="form-control" name="building">
             </div>
             <div class="col-md-6 form-group p_star">
-              <input type="text" class="form-control" id="number" name="number">
-              <span class="placeholder" data-placeholder="Phone number"></span>
+              <label class="form-label">City</label>
+              <input type="text" class="form-control" name="city">
             </div>
             <div class="col-md-6 form-group p_star">
-              <input type="text" class="form-control" id="email" name="compemailany">
-              <span class="placeholder" data-placeholder="Email Address"></span>
+              <label class="form-label">Country</label>
+              <input type="text" class="form-control" name="country">
             </div>
+            <!--  -->
+            <div class="col-md-6 form-group p_star">
+              <label class="form-label">Phone number.</label>
+              <input type="text" class="form-control" name="phoneNumber">
+            </div>
+            <div class="col-md-6 form-group p_star">
+              <label class="form-label">Email Address</label>
+              <input type="text" class="form-control" name="email">
+            </div>
+
             <div class="col-md-12 form-group p_star">
+              <label class="form-label">Credit Card Holder Name</label>
+              <input type="text" class="form-control" name="ccName">
+            </div>
+
+            <div class="col-md-4 form-group p_star">
+              <label class="form-label">Payment Method</label>
               <select class="country_select">
-                <option value="1">Country</option>
-                <option value="2">Country</option>
-                <option value="4">Country</option>
+                <option value="Visa">VISA</option>
+                <option value="MasterCard">Master Card</option>
               </select>
             </div>
+            <div class="col-md-8 form-group p_star">
+              <label class="form-label">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-credit-card" viewBox="0 0 16 16">
+                  <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1H2zm13 4H1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7z" />
+                  <path d="M2 10a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1z" />
+                </svg> Credit Card Number</label>
+              <input type="text" class="form-control" name="ccNum">
+            </div>
+            <!--  -->
+            <div class="col-md-6 form-group p_star">
+              <label class="form-label d-block">Exp. Date</label>
+              <input type="number" maxlength="2" class="form-control col-md-4 d-inline " name="expMonth">
+              <h3 class="d-inline">/</h3>
+              <input type="number" maxlength="2" class="form-control col-md-4 d-inline" name="expYear">
+            </div>
+            <div class="col-md-4 form-group p_star">
+              <label class="form-label">CVV</label>
+              <input type="number" maxlength="3" class="form-control" name="ccv">
+            </div>
+            <!--             
             <div class="col-md-12 form-group p_star">
               <input type="text" class="form-control" id="add1" name="add1">
               <span class="placeholder" data-placeholder="Address line 01"></span>
@@ -153,7 +183,7 @@ require_once 'layout/header.php';
                 <label for="f-option3">Ship to a different address?</label>
               </div>
               <textarea class="form-control" name="message" id="message" rows="1" placeholder="Order Notes"></textarea>
-            </div>
+            </div> -->
           </form>
         </div>
         <div class="col-lg-4">
@@ -163,18 +193,18 @@ require_once 'layout/header.php';
               <li><a href="#">
                   <h4>Product <span>Total</span></h4>
                 </a></li>
-                <?php
-                foreach($orderItems as $item){
-                ?>
-              <li><a><?php echo $item['name'] ?><span class="middle">x <?php echo $item['quantity'] ?></span> <span class="last">$ <?php echo $item['total_price'] ?></span></a></li>
-            <?php } ?>  
+              <?php
+              foreach ($orderItems as $item) {
+              ?>
+                <li><a><?php echo $item['name'] ?><span class="middle">x <?php echo $item['quantity'] ?></span> <span class="last">$ <?php echo $item['total_price'] ?></span></a></li>
+              <?php } ?>
             </ul>
             <ul class="list list_2">
               <li><a href="#">Subtotal <span>$ <?php echo $orderSubtotal ?></span></a></li>
               <li><a href="#">Shipping <span>Flat rate: $50.00</span></a></li>
               <li><a href="#">Total <span>$2210.00</span></a></li>
             </ul>
-            <div class="payment_item">
+            <!-- <div class="payment_item">
               <div class="radion_btn">
                 <input type="radio" id="f-option5" name="selector">
                 <label for="f-option5">Check payments</label>
@@ -197,9 +227,9 @@ require_once 'layout/header.php';
               <input type="checkbox" id="f-option4" name="selector">
               <label for="f-option4">I’ve read and accept the </label>
               <a href="#">terms & conditions*</a>
-            </div>
+            </div> -->
             <div class="text-center">
-              <a class="button button-paypal" href="./confirmation.php?orderid=<?php echo $orderId;?>">Proceed to Paypal</a>
+              <a class="button button-paypal" href="./confirmation.php?orderid=<?php echo $orderId; ?>">Proceed to Paypal</a>
             </div>
           </div>
         </div>

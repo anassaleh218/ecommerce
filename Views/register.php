@@ -36,11 +36,11 @@ if (isset($_POST['fullname']) && isset($_POST['email']) && isset($_POST['passwor
 			if ($auth->getCurrentUser() != false) {
 				$currentUser = $auth->getCurrentUser();
 				if ($auth->getUserRole($currentUser) == "seller") {
-					header("location: ../views/manage-products.php");
+					header("location: manage-products.php");
 				} else if ($auth->getUserRole($currentUser) == "admin") {
-					header("location: ../views/admin.php");
+					header("location: admin.php");
 				} else {
-					header("location: ../views/index.php");
+					header("location: index.php");
 				}
 			} else {
 				$_SESSION["errMsg"] =  "you must login or regester first";
