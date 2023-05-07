@@ -2,11 +2,14 @@
 require_once '../Models/User.php';
 require_once 'DBController.php';
 require_once 'Authcontroller.php';
+require_once 'CartController.php';
+
+
 
 class OrderController
 {
     public $db;
-
+    public $cart;
     // public function getUserCart(User $user)
     // {
     //     $this->db = new DBController;
@@ -44,20 +47,23 @@ class OrderController
 
 
 
-    public function addToOrder($orderId, $cart_items)
+    public function addToOrder($orderId, $cart_items,$currentUser)
     {
         $this->db = new DBController;
         if ($this->db->openConnection()) {
 
-            //
-            
-            foreach($cart_items as $item) {
+            //emptying cart not in first if XXX
+
+            foreach ($cart_items as $item) {
                 $product_id = $item['id'];
+                $query = "insert INTO order_product (`order_id`, `product_id`) VALUES ('$orderId', '$product_id');";
+                $result = $this->db->insert($query);
             }
+            
+            $this->cart=new CartController;
+            $cartId=$this->cart->getUserCart($currentUser);
+            $this->cart->emptyingCart($cartId['id']);
 
-
-            $query = "insert INTO order_product (`order_id`, `product_id`) VALUES ('$orderId', '$product_id');";
-            $result = $this->db->insert($query);
             if ($result != false) {
                 if (session_status() === PHP_SESSION_NONE) {
                     session_start();
@@ -77,28 +83,28 @@ class OrderController
 
     public function getOrderItems($orderId)
     {
-       $this->db = new DBController;
-       if ($this->db->openConnection()) {
-          $query = "select * ,quantity * start_price AS total_price FROM product INNER JOIN order_product ON product.id = order_product.product_id WHERE order_product.order_id ='$orderId'";
-          return $this->db->select($query);
-       } else {
-          echo "Error in Database Connection";
-          return false;
-       }
+        $this->db = new DBController;
+        if ($this->db->openConnection()) {
+            $query = "select * ,cast(quantity * start_price as decimal(15,2)) AS total_price FROM product INNER JOIN order_product ON product.id = order_product.product_id WHERE order_product.order_id ='$orderId'";
+            return $this->db->select($query);
+        } else {
+            echo "Error in Database Connection";
+            return false;
+        }
     }
 
     public function getOrderProductsSubtotal($orderId)
     {
-       $this->db = new DBController;
-       if ($this->db->openConnection()) {
-          $query = "select SUM(product.quantity * product.start_price) AS subtotal FROM product INNER JOIN order_product ON product.id = order_product.product_id WHERE order_product.order_id ='$orderId';";
-          return $this->db->select($query);
-       } else {
-          echo "Error in Database Connection";
-          return false;
-       }
+        $this->db = new DBController;
+        if ($this->db->openConnection()) {
+            $query = "select cast(SUM(product.quantity * product.start_price) as decimal(15,2)) AS subtotal FROM product INNER JOIN order_product ON product.id = order_product.product_id WHERE order_product.order_id ='$orderId';";
+            return $this->db->select($query);
+        } else {
+            echo "Error in Database Connection";
+            return false;
+        }
     }
- 
+
 
     // public function removeFromCart($id)
     // {

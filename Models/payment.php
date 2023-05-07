@@ -50,12 +50,14 @@ class payment extends buyer
   {
     $this->creditCardHolderName = $cchn;
   }
-  function add()
-  {
-  }
-  function remove()
-  {
-  }
+  
+  // function add()
+  // {
+  // }
+
+  // function remove()
+  // {
+  // }
 }
 
 ?>

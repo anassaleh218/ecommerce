@@ -43,7 +43,7 @@ if (isset($_GET['add'])) {
     
     try {
         $orderId=$order->createOrder($currentUser->id);
-        $order->addToOrder($orderId,$cartItems);
+        $order->addToOrder($orderId,$cartItems,$currentUser);
         // $_SESSION["orderid"] =$orderId;
         header("Location: checkout.php?orderid=".$orderId);
         // echo $orderId;
