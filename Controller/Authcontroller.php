@@ -70,7 +70,7 @@ class Authcontroller
                 $_SESSION["userName"] = $user->username;
                 $_SESSION["fullName"] = $user->fullname;
                 $_SESSION["roleId"] = $user->roleid;
-                $_SESSION["userRole"] = "Client";
+                // $_SESSION["userRole"] = "Client";
 
                 $cart = new CartController();
                 $cart->createCart($result);// create cart for the new user with id $result

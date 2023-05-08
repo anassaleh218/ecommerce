@@ -1,6 +1,32 @@
 <?php
-//require_once '../Controller/Authcontroller.php';
+require_once '../Controller/Authcontroller.php';
 
+//// check if user is login and admin /////
+$auth = new AuthController;
+
+if (isset($_GET['logout'])) {
+  session_destroy();
+}
+
+
+if ($auth->getCurrentUser() != false) {
+  $currentUser = $auth->getCurrentUser();
+  $userRole = $auth->getUserRole($currentUser);
+  // if($auth->getUserRole($currentUser) != "admin"){
+  //   if (session_status() === PHP_SESSION_NONE) {
+  //     session_start();
+  //   }
+  //   $_SESSION["errMsg"] =  "you must be Admin";
+  //   header("location: ../Views/login.php");
+  // }
+} else {
+  if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+  }
+  // $_SESSION["errMsg"] =  "you must login or regester first";
+  // header("location: ../Views/login.php");
+}
+/////////////////////////////////////////
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -55,28 +81,49 @@
                   <li class="nav-item"><a class="nav-link" href="single-blog.php">Blog Details</a></li>
                 </ul>
               </li> -->
-              <li class="nav-item submenu dropdown">
-                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Pages</a>
-                <ul class="dropdown-menu">
-                  <li class="nav-item"><a class="nav-link" href="login.php">Login</a></li>
-                  <li class="nav-item"><a class="nav-link" href="register.php">Register</a></li>
-                  <!-- <li class="nav-item"><a class="nav-link" href="tracking-order.php">Tracking</a></li> -->
-                </ul>
-              </li>
-              <li class="nav-item"><a class="nav-link" href="admin.php">Admin</a></li>
-              <li class="nav-item submenu dropdown">
-                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Seller</a>
-                <ul class="dropdown-menu">
-                  <li class="nav-item"><a class="nav-link" href="add-product.php">Add Product</a></li>
-                  <li class="nav-item"><a class="nav-link" href="manage-products.php">Manage Products</a></li>
-                </ul>
-              </li>
+
+              <?php if (!isset($userRole)) { ?>
+                <li class="nav-item submenu dropdown">
+                  <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Pages</a>
+                  <ul class="dropdown-menu">
+                    <li class="nav-item"><a class="nav-link" href="login.php">Login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="register.php">Register</a></li>
+                    <!-- <li class="nav-item"><a class="nav-link" href="tracking-order.php">Tracking</a></li> -->
+                  </ul>
+                </li>
+              <?php } ?>
+
+
+              <?php if (isset($userRole)) {
+                if ($userRole == "admin") { ?>
+                  <li class="nav-item"><a class="nav-link" href="admin.php">Admin</a></li>
+              <?php }
+              } ?>
+
+
+              <?php if (isset($userRole)) {
+                if ($userRole == "seller") { ?>
+                  <li class="nav-item submenu dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Seller</a>
+                    <ul class="dropdown-menu">
+                      <li class="nav-item"><a class="nav-link" href="add-product.php">Add Product</a></li>
+                      <li class="nav-item"><a class="nav-link" href="manage-products.php">Manage Products</a></li>
+                    </ul>
+                  </li>
+              <?php }
+              } ?>
+
+
             </ul>
 
             <ul class="nav-shop">
               <li class="nav-item"><button><a href="products.php"><i class="ti-search"></i></a></button></li>
-              <li class="nav-item"><button><a href="cart.php"><i class="ti-shopping-cart"></i><span class="nav-shop__circle">3</span></a></button> </li>
-              <li class="nav-item"><a class="button button-header" href="#">Buy Now</a></li>
+              <li class="nav-item"><button><a href="cart.php"><i class="ti-shopping-cart"></i></a></button> </li>
+              <!-- <li class="nav-item"><button><a href="cart.php"><i class="ti-shopping-cart"></i><span class="nav-shop__circle">3</span></a></button> </li> -->
+              <?php if (isset($userRole)) { ?>
+                <li class="nav-item"><a class="button button-header" href="index.php?logout">logout</a></li>
+              <?php } ?>
+
             </ul>
 
             <span> <?php
