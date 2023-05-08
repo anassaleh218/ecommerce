@@ -1,5 +1,6 @@
 <?php
 require_once '../Models/User.php';
+require_once '../Models/billing.php';
 require_once 'DBController.php';
 require_once 'Authcontroller.php';
 require_once 'CartController.php';
@@ -47,7 +48,7 @@ class OrderController
 
 
 
-    public function addToOrder($orderId, $cart_items,$currentUser)
+    public function addToOrder($orderId, $cart_items, $currentUser)
     {
         $this->db = new DBController;
         if ($this->db->openConnection()) {
@@ -59,9 +60,9 @@ class OrderController
                 $query = "insert INTO order_product (`order_id`, `product_id`) VALUES ('$orderId', '$product_id');";
                 $result = $this->db->insert($query);
             }
-            
-            $this->cart=new CartController;
-            $cartId=$this->cart->getUserCart($currentUser);
+
+            $this->cart = new CartController;
+            $cartId = $this->cart->getUserCart($currentUser);
             $this->cart->emptyingCart($cartId['id']);
 
             if ($result != false) {
@@ -105,6 +106,19 @@ class OrderController
         }
     }
 
+
+    public function addBilling(Billing $billing)
+    {
+        $this->db = new DBController;
+        if ($this->db->openConnection()) {
+            // $product->sellerid=
+            $query = "insert into order_billing values ('','" . $billing->get_flatNo() . "','" . $billing->get_buildingNo() . "','" . $billing->get_city() . "','" . $billing->get_country() . "','" . $billing->get_phone() . "','".$billing->get_email()."','".$billing->get_creditCardHolderName()."','".$billing->get_creditCardType()."','".$billing->get_creditCardNum()."','".$billing->get_expMonth()."','".$billing->get_expYear()."','".$billing->get_cvv()."','".$billing->get_orderId()."','".$billing->get_buyerId()."')";
+            return $this->db->insert($query);
+        } else {
+            echo "Error in Database Connection";
+            return false;
+        }
+    }
 
     // public function removeFromCart($id)
     // {

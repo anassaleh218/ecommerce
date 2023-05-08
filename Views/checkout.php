@@ -3,7 +3,7 @@ require_once '../Controller/ProductController.php';
 require_once '../Controller/CartController.php';
 require_once '../Controller/Authcontroller.php';
 require_once '../Controller/OrderController.php';
-
+require_once '../Models/billing.php';
 
 if (session_status() === PHP_SESSION_NONE) {
   session_start();
@@ -13,13 +13,50 @@ if (session_status() === PHP_SESSION_NONE) {
 if (isset($_GET['orderid'])) {
   if (!empty($_GET['orderid'])) {
 
-
     $orderId = $_GET['orderid'];
 
     $order = new OrderController;
     $orderItems = $order->getOrderItems($orderId);
     $orderSubtotal = $order->getOrderProductsSubtotal($orderId)[0]['subtotal'];
   }
+}
+
+$buyer = new Authcontroller;
+
+$buyerId = $buyer->getCurrentUser()->id;
+
+$billing = new Billing;
+
+if (isset($_POST['flat']) && isset($_POST['building']) && isset($_POST['city']) && isset($_POST['country']) && isset($_POST['phone']) && isset($_POST['email']) && isset($_POST['ccName']) && isset($_POST['ccType']) && isset($_POST['ccNum']) && isset($_POST['expMonth']) && isset($_POST['expYear']) && isset($_POST['ccv'])) {
+
+  if (!empty($_POST['flat']) && !empty($_POST['building']) && !empty($_POST['city']) && !empty($_POST['country']) && !empty($_POST['phone']) && !empty($_POST['email']) && !empty($_POST['ccName']) && !empty($_POST['ccType']) && !empty($_POST['ccNum']) && !empty($_POST['expMonth']) && !empty($_POST['expYear']) && !empty($_POST['ccv'])) {
+
+    $billing->adding($_POST['flat'],$_POST['building'],$_POST['city'],$_POST['country'],$_POST['phone'],$_POST['email'],$_POST['ccName'],$_POST['ccType'],$_POST['ccNum'],$_POST['expMonth'],$_POST['expYear'],$_POST['cvv'],$orderId,$buyerId);
+    // $billing->set_flatNo($_POST['flat']);
+    // $billing->set_buildingNo($_POST['building']);
+    // $billing->set_city($_POST['city']);
+    // $billing->set_country($_POST['country']);
+    // $billing->set_phone($_POST['phone']);
+    // $billing->set_email($_POST['email']);
+    // $billing->set_creditCardHolderName($_POST['ccName']);
+    // $billing->set_creditCardType($_POST['ccType']);
+    // $billing->set_creditCardNum($_POST['ccNum']);
+    // $billing->set_expMonth($_POST['expMonth']);
+    // $billing->set_expYear($_POST['expYear']);
+    // $billing->set_cvv($_POST['ccv']);
+    // $billing->set_orderId($orderId);
+    // $billing->set_buyerId($buyerId);
+
+    echo $orderId;
+    if ($order->addBilling($billing)) {
+    } else {
+      $errMsg =$_SESSION["errMsg"] =  "error in adding bill";
+    }
+  } else {
+    $errMsg = $_SESSION["errMsg"];
+  }
+} else {
+  $errMsg = "Please fill all fields";
 }
 
 ?>
@@ -36,6 +73,15 @@ require_once 'layout/header.php';
   <div class="container h-100">
     <div class="blog-banner">
       <div class="text-center">
+      <?php 
+      print_r($order->addBilling($billing)); 
+      if ($errMsg != "") {
+        ?>
+          <div class="alert alert-danger" role="alert"><?php echo $errMsg ?></div>
+        <?php
+        }
+  
+      ?>
         <h1>Product Checkout</h1>
         <nav aria-label="breadcrumb" class="banner-breadcrumb">
           <ol class="breadcrumb">
@@ -89,7 +135,7 @@ require_once 'layout/header.php';
       <div class="row">
         <div class="col-lg-8">
           <h3>Billing Details</h3>
-          <form class="row contact_form" action="#" method="post" novalidate="novalidate">
+          <form class="row contact_form" action="checkout.php" method="post" novalidate="novalidate">
             <div class="col-md-6 form-group p_star">
               <label class="form-label">Flat No.</label>
               <input type="text" class="form-control" name="flat">
@@ -109,7 +155,7 @@ require_once 'layout/header.php';
             <!--  -->
             <div class="col-md-6 form-group p_star">
               <label class="form-label">Phone number.</label>
-              <input type="text" class="form-control" name="phoneNumber">
+              <input type="text" class="form-control" name="phone">
             </div>
             <div class="col-md-6 form-group p_star">
               <label class="form-label">Email Address</label>
@@ -123,9 +169,10 @@ require_once 'layout/header.php';
 
             <div class="col-md-4 form-group p_star">
               <label class="form-label">Payment Method</label>
-              <select class="country_select">
+              <select class="country_select" name="ccType">
                 <option value="Visa">VISA</option>
                 <option value="MasterCard">Master Card</option>
+                <option value="Meeza">Meeza - Only In Egypt</option>
               </select>
             </div>
             <div class="col-md-8 form-group p_star">
@@ -184,6 +231,9 @@ require_once 'layout/header.php';
               </div>
               <textarea class="form-control" name="message" id="message" rows="1" placeholder="Order Notes"></textarea>
             </div> -->
+            <div class="text-center">
+              <a class="button" href="./checkout.php?orderid=<?php echo $orderId; ?>">Confirm</a>
+            </div>
           </form>
         </div>
         <div class="col-lg-4">
@@ -228,9 +278,6 @@ require_once 'layout/header.php';
               <label for="f-option4">I’ve read and accept the </label>
               <a href="#">terms & conditions*</a>
             </div> -->
-            <div class="text-center">
-              <a class="button button-paypal" href="./confirmation.php?orderid=<?php echo $orderId; ?>">Proceed to Paypal</a>
-            </div>
           </div>
         </div>
       </div>

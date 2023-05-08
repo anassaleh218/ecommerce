@@ -179,7 +179,57 @@ class ProductController
    //  }
 
 
+   public function addToFav(User $user, $product_id)
+   {
+       $this->db = new DBController;
+       if ($this->db->openConnection()) {
+           $query = "insert INTO fav_products VALUES ('".$user->id."', '$product_id');";
+           $result = $this->db->insert($query);
+           if ($result != false) {
+               if (session_status() === PHP_SESSION_NONE) {
+                   session_start();
+               }
+               $this->db->closeConnection();
+               return true;
+           } else {
+               $_SESSION["errMsg"] = "Somthing went wrong... try again later";
+               $this->db->closeConnection();
+               return false;
+           }
+       } else {
+           echo "Error in Database Connection";
+           return false;
+       }
+   }
 
+   public function getFav(User $user)
+   {
+      $this->db = new DBController;
+      if ($this->db->openConnection()) {
+         $query = "select product.*,category.name as category
+         FROM product
+         INNER JOIN fav_products ON product.id = fav_products.product_id 
+         INNER JOIN category ON product.category_id = category.id
+         WHERE fav_products.buyer_id ='".$user->id."'";
+         return $this->db->select($query);
+      } else {
+         echo "Error in Database Connection";
+         return false;
+      }
+   }
+
+
+   public function removeFav($id)
+   {
+      $this->db = new DBController;
+      if ($this->db->openConnection()) {
+         $query = "delete from fav_products where product_id ='$id'";
+         return $this->db->delete($query);
+      } else {
+         echo "Error in Database Connection";
+         return false;
+      }
+   }
 
 
 }

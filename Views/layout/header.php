@@ -1,3 +1,7 @@
+<?php
+//require_once '../Controller/Authcontroller.php';
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -35,11 +39,13 @@
               <li class="nav-item submenu dropdown">
                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Shop</a>
                 <ul class="dropdown-menu">
+                  <li class="nav-item"><a class="nav-link" href="fav-products.php">Fav</a></li>
                   <li class="nav-item"><a class="nav-link" href="products.php">Shop Category</a></li>
+                  <li class="nav-item"><a class="nav-link" href="cart.php">Shopping Cart</a></li>
                   <!-- <li class="nav-item"><a class="nav-link" href="single-product.php">Product Details</a></li> -->
                   <li class="nav-item"><a class="nav-link" href="checkout.php">Product Checkout</a></li>
                   <li class="nav-item"><a class="nav-link" href="confirmation.php">Confirmation</a></li>
-                  <li class="nav-item"><a class="nav-link" href="cart.php">Shopping Cart</a></li>
+
                 </ul>
               </li>
               <!-- <li class="nav-item submenu dropdown">
@@ -59,7 +65,7 @@
               </li>
               <li class="nav-item"><a class="nav-link" href="admin.php">Admin</a></li>
               <li class="nav-item submenu dropdown">
-                <a  href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Seller</a>
+                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Seller</a>
                 <ul class="dropdown-menu">
                   <li class="nav-item"><a class="nav-link" href="add-product.php">Add Product</a></li>
                   <li class="nav-item"><a class="nav-link" href="manage-products.php">Manage Products</a></li>
@@ -72,6 +78,12 @@
               <li class="nav-item"><button><a href="cart.php"><i class="ti-shopping-cart"></i><span class="nav-shop__circle">3</span></a></button> </li>
               <li class="nav-item"><a class="button button-header" href="#">Buy Now</a></li>
             </ul>
+
+            <span> <?php
+                    // $buyer = new Authcontroller;
+                    // $buyerName = $buyer->getCurrentUser()->fullname;
+                    // echo "Hello, " . $buyerName
+                    ?> </span>
           </div>
         </div>
       </nav>

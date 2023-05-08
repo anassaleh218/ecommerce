@@ -1,11 +1,56 @@
 <?php
-require_once 'layout/header.php';
 require_once '../Models/product.php';
+require_once '../Controller/Authcontroller.php';
 require_once '../Controller/ProductController.php';
 
 $productController = new ProductController;
 $categories = $productController->getCategories();
 $products = $productController->getAllProducts();
+
+if (isset($_GET['pid'])) {
+  if (!empty($_GET['pid'])) {
+
+
+    $id = $_GET['pid'];
+    // $productController = new ProductController;
+    $auth = new AuthController;
+
+
+    if ($productController->getProductById($id)) {
+      $product = $productController->getProductById($id)[0];
+      // print_r($product);
+      if (isset($_GET['add'])) {
+        if ($auth->getCurrentUser() != false) {
+
+          $currentUser = $auth->getCurrentUser();
+          try {
+            $productController->addToFav($currentUser, $product["id"]);
+            echo "<div class=\"alert alert-success\" role=\"alert\">added successfully</div>";
+          } catch (Exception $e) {
+            // echo "<div class=\"alert alert-success\" role=\"alert\">added successfully</div>";
+            echo 'Message: ' . $e->getMessage();
+          }
+        } else {
+          if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+          }
+          $_SESSION["errMsg"] =  "you must login or regester first";
+          header("location: ../Views/login.php");
+        }
+      }
+    } else {
+      $_SESSION["errMsg"] =  "no product by this id";
+      header("location: ../Views/index.php");
+    }
+  } else {
+    // $_SESSION["errMsg"] =  "no product by this id";
+    // header("location: ../Views/index.php");
+  }
+} else {
+  // $_SESSION["errMsg"] =  "no product by this id";
+  // header("location: ../Views/index.php");
+}
+
 
 
 // function handleClick()
@@ -36,6 +81,9 @@ onclick="window.location.href='category-products.php?id=<?php echo $category['id
 ?>
 
 
+<?php
+require_once 'layout/header.php';
+?>
 <!-- ================ start banner area ================= -->
 <section class="blog-banner-area" id="category">
   <div class="container h-100">
@@ -171,7 +219,7 @@ onclick="window.location.href='category-products.php?id=<?php echo $category['id
                     <ul class="card-product__imgOverlay">
                       <li><button><i class="ti-search"></i></button></li>
                       <li><button><i class="ti-shopping-cart"></i></button></li>
-                      <li><button><i class="ti-heart"></i></button></li>
+                      <li><button><a href="products.php?pid=<?php echo $product["id"]; ?>&add"><i class="ti-heart"></i></a></button></li>
                     </ul>
                   </div>
                   <div class="card-body">

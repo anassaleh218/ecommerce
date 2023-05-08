@@ -1,70 +1,76 @@
 <?php
+// if (!isset($_SESSION["errMsg"])) {
+// 	session_start();
+// 	if (isset($_SESSION["errMsg"])) {
+// 		echo "<div class=\"alert alert-danger\" role=\"alert\">" . $_SESSION["errMsg"] . "</div>";
+//     unset($_SESSION['errMsg']);
+
+// 	}
+// 	// session_destroy();
+// }
+?>
+
+<!--  -->
+<?php
 require_once '../Models/product.php';
 require_once '../Controller/Authcontroller.php';
 require_once '../Controller/ProductController.php';
 
+$auth = new AuthController;
 $productController = new ProductController;
-$categories = $productController->getCategories();
-// $products = $productController->getAllProducts();
 
 
-
-if (isset($_GET["id"])) {
-  if (!empty($_GET["id"])) {
-    $products = $productController->getCategoryProducts($_GET["id"]);
-  } else {
-    header("location: index.php");
-  }
+if ($auth->getCurrentUser() != false) {
+  $currentUser = $auth->getCurrentUser();
 } else {
-  header("location: index.php");
+  if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+  }
+  $_SESSION["errMsg"] =  "you must login or regester first";
+  header("location: ../Views/login.php");
 }
-
 
 if (isset($_GET['pid'])) {
   if (!empty($_GET['pid'])) {
-
-
-    $id = $_GET['pid'];
-    $productController = new ProductController;
-    $auth = new AuthController;
-
-
-    if ($productController->getProductById($id)) {
-      $product = $productController->getProductById($id)[0];
-      // print_r($product);
-      if (isset($_GET['add'])) {
-        if ($auth->getCurrentUser() != false) {
-
-          $currentUser = $auth->getCurrentUser();
-          try {
-            $productController->addToFav($currentUser, $product["id"]);
-            echo "<div class=\"alert alert-success\" role=\"alert\">added To Fav successfully</div>";
-          } catch (Exception $e) {
-            // echo "<div class=\"alert alert-success\" role=\"alert\">added To Fav successfully</div>";
-            echo 'Message: ' . $e->getMessage();
-          }
-        } else {
-          if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-          }
-          $_SESSION["errMsg"] =  "you must login or regester first";
-          header("location: ../Views/login.php");
-        }
+      if ($productController->removeFav($_GET['pid'])) {
+          $deleteMsg = "Product Deleted Successfully";
+          $productController->getFav($currentUser);
       }
-    } else {
-      $_SESSION["errMsg"] =  "no product by this id";
-      header("location: ../Views/index.php");
-    }
-  } else {
-    // $_SESSION["errMsg"] =  "no product by this id";
-    // header("location: ../Views/index.php");
   }
-} else {
-  // $_SESSION["errMsg"] =  "no product by this id";
-  // header("location: ../Views/index.php");
 }
 
+
+
+$products = $productController->getFav($currentUser);
+
+
+// function handleClick()
+// {
+//   global $productController;
+//   if (isset($_GET["id"])) {
+//     if (!empty($_GET["id"])) {
+//       $products = $productController->getCategoryProducts($_GET["id"]);
+//     } else {
+//       header("location: index.php");
+//     }
+//   } else {
+//     header("location: index.php");
+//   }
+// }
+
+///
+
+/*
+onclick="window.location.href='category-products.php?id=<?php echo $category['id'] ?>';"
+
+////
+
+
+*/
+
+
 ?>
+
 
 
 
@@ -95,12 +101,12 @@ require_once 'layout/header.php';
 <section class="section-margin--small mb-5">
   <div class="container">
     <div class="row">
-      <div class="col-xl-3 col-lg-4 col-md-5">
+      <!-- <div class="col-xl-3 col-lg-4 col-md-5">
         <div class="sidebar-categories">
           <div class="head">Browse Categories</div>
           <ul class="main-categories">
             <li class="common-filter">
-              <form action="#">
+              <form>
                 <ul>
                   <?php
                   foreach ($categories as $category) {
@@ -108,14 +114,10 @@ require_once 'layout/header.php';
                   ?>
                     <li class="filter-list">
                       <a target="_self" href="category-products.php?id=<?php echo $category["id"] ?>">
-                        <input class="pixel-radio" type="radio" <?php
-                                                                if ($_GET["id"] == $category["id"]) {
-                                                                ?> checked <?php
-                                                                }
-            ?> name="categoryName" value="<?php echo $category["id"] ?>" onclick="window.location.href='category-products.php?id=<?php echo $category['id'] ?>';">
+                        <input class="pixel-radio" type="radio" name="categoryName" value="<?php echo $category["id"] ?>" onclick="window.location.href='category-products.php?id=<?php echo $category['id'] ?>';">
                         <label for="<?php echo $category["name"] ?>"><?php echo $category["name"] ?><span>(<?php echo $category["categoryQuantity"] ?>)</span></label>
+                      </a>
                     </li>
-                    </a>
                   <?php
 
                   }
@@ -127,7 +129,7 @@ require_once 'layout/header.php';
             </li>
           </ul>
         </div>
-        <!-- <div class="sidebar-filter">
+        <div class="sidebar-filter">
           <div class="top-filter-head">Product Filters</div>
           <div class="common-filter">
             <div class="head">Brands</div>
@@ -169,9 +171,9 @@ require_once 'layout/header.php';
               </div>
             </div>
           </div>
-        </div> -->
-      </div>
-      <div class="col-xl-9 col-lg-8 col-md-7">
+        </div>
+      </div> -->
+      <div class="col-xl-12 col-lg-8 col-md-7">
         <!-- Start Filter Bar -->
         <div class="filter-bar d-flex flex-wrap align-items-center">
           <!-- <div class="sorting">
@@ -211,13 +213,13 @@ require_once 'layout/header.php';
                     <ul class="card-product__imgOverlay">
                       <li><button><i class="ti-search"></i></button></li>
                       <li><button><i class="ti-shopping-cart"></i></button></li>
-                      <li><button><a href="category-products.php?pid=<?php echo $product["id"]; ?>&add"><i class="ti-heart"></i></a></button></li>
+                      <li><a href="fav-products.php?pid=<?php echo $product["id"]; ?>"><button><i class="ti-heart-broken"></i></button></a></li>
                     </ul>
                   </div>
                   <div class="card-body">
                     <p><?php echo $product['category'] ?></p>
-                    <h4 class="card-product__title"><a href="#"><?php echo $product['name'] ?></a></h4>
-                    <p class="card-product__price">$<?php echo $product['price'] ?></p>
+                    <h4 class="card-product__title"><a href="single-product.php?id=<?php echo $product['id'] ?>"><?php echo $product['name'] ?></a></h4>
+                    <p class="card-product__price">$<?php echo $product['start_price'] ?></p>
                   </div>
                 </div>
               </div>
