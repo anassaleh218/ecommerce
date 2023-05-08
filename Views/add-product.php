@@ -129,6 +129,7 @@ if ($errMsg != "") {
           <select class="form-group form-select mx-1" name="size" aria-label="Default select example">
 
             <option value="" selected disabled>Select Size</option>
+            <option value="NULL">No Size</option>
             <?php
             foreach ($sizes as $size) {
 

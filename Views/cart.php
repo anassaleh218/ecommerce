@@ -24,6 +24,7 @@ if (isset($_GET['id'])) {
 if ($auth->getCurrentUser() != false) {
     $currentUser = $auth->getCurrentUser();
     $cartItems = $cart->getCartItems($currentUser);
+    // print_r($cartItems);
 } else {
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
@@ -38,19 +39,14 @@ if ($auth->getCurrentUser() != false) {
 // in the checkout page get orderid which is created and getting this order data
 
 if (isset($_GET['add'])) {
-
     $order= new OrderController;
-    
     try {
         $orderId=$order->createOrder($currentUser->id);
         $order->addToOrder($orderId,$cartItems,$currentUser);
-        // $_SESSION["orderid"] =$orderId;
         header("Location: checkout.php?orderid=".$orderId);
-        // echo $orderId;
-        // echo "<div class=\"alert alert-success\" role=\"alert\">order created successfully</div>";
     } catch (Exception $e) {
-        echo "<div class=\"alert alert-success\" role=\"alert\">order not created successfully</div>";
-        // echo 'Message: ' . $e->getMessage();
+        // echo "<div class=\"alert alert-success\" role=\"alert\">order not created successfully</div>";
+        echo 'Message: ' . $e->getMessage();
     }
 
     if (session_status() === PHP_SESSION_NONE) {
@@ -125,13 +121,13 @@ require_once 'layout/header.php';
                                 </td>
                                 <td>
                                     <div class="product_count">
-                                        <input type="text" name="qty" id="sst" maxlength="12" value="1" title="Quantity:" class="input-text qty">
+                                        <input type="text" name="qty" id="sst" maxlength="12" value="<?php echo $item["quantity"] ?>" title="Quantity:" class="input-text qty">
                                         <!-- <button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;" class="increase items-count" type="button"><i class="lnr lnr-chevron-up"></i></button>
                                         <button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;" class="reduced items-count" type="button"><i class="lnr lnr-chevron-down"></i></button> -->
                                     </div>
                                 </td>
                                 <td>
-                                    <h5>$<?php echo $item["start_price"] * 1 ?></h5>
+                                    <h5>$<?php echo $item["start_price"] * $item["quantity"] ?></h5>
                                 </td>
                                 <td>
                                     <a class="btn btn-danger" href="cart.php?id=<?php echo $item["id"] ?>">Remove</a>
