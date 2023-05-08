@@ -58,12 +58,12 @@ class CartController
 
 
 
-    public function addToCart(User $user, $product_id)
+    public function addToCart(User $user, $product_id, $quantity)
     {
         $this->db = new DBController;
         if ($this->db->openConnection()) {
             $userCart = $this->getUserCart($user); // get user cart to add product to it
-            $query = "insert INTO cart_product (`cart_id`, `product_id`) VALUES ('".$userCart['id']."', '$product_id');";
+            $query = "insert INTO cart_product VALUES ('".$userCart['id']."', '$product_id', '$quantity');";
             $result = $this->db->insert($query);
             if ($result != false) {
                 if (session_status() === PHP_SESSION_NONE) {

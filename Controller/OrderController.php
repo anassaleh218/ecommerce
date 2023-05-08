@@ -57,7 +57,8 @@ class OrderController
 
             foreach ($cart_items as $item) {
                 $product_id = $item['id'];
-                $query = "insert INTO order_product (`order_id`, `product_id`) VALUES ('$orderId', '$product_id');";
+                $quantity = $item['quantity'];
+                $query = "insert INTO order_product (`order_id`, `product_id`, `quantity`) VALUES ('$orderId', '$product_id', '$quantity');";
                 $result = $this->db->insert($query);
             }
 
@@ -86,7 +87,7 @@ class OrderController
     {
         $this->db = new DBController;
         if ($this->db->openConnection()) {
-            $query = "select * ,cast(quantity * start_price as decimal(15,2)) AS total_price FROM product INNER JOIN order_product ON product.id = order_product.product_id WHERE order_product.order_id ='$orderId'";
+            $query = "select * ,cast(order_product.quantity * start_price as decimal(15,2)) AS total_price FROM product INNER JOIN order_product ON product.id = order_product.product_id WHERE order_product.order_id ='$orderId'";
             return $this->db->select($query);
         } else {
             echo "Error in Database Connection";

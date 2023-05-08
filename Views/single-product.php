@@ -10,7 +10,6 @@ if (session_status() === PHP_SESSION_NONE) {
 if (isset($_GET['id'])) {
 	if (!empty($_GET['id'])) {
 
-
 		$id = $_GET['id'];
 		$productController = new ProductController;
 		$auth = new AuthController;
@@ -19,12 +18,14 @@ if (isset($_GET['id'])) {
 		if ($productController->getProductById($id)) {
 			$product = $productController->getProductById($id)[0];
 			// print_r($product);
-			if (isset($_GET['add'])) {
+			if (isset($_GET['add']) && isset($_GET['quantity'])) {
 				if ($auth->getCurrentUser() != false) {
 					$cart = new CartController();
 					$currentUser = $auth->getCurrentUser();
+					$quantity = $_GET['quantity'];
+
 					try {
-						$cart->addToCart($currentUser, $product["id"]);
+						$cart->addToCart($currentUser, $product["id"], $quantity);
 						echo "<div class=\"alert alert-success\" role=\"alert\">added successfully</div>";
 					} catch (Exception $e) {
 						echo "<div class=\"alert alert-success\" role=\"alert\">added successfully</div>";
@@ -65,16 +66,16 @@ require_once 'layout/header.php';
 	<div class="container h-100">
 		<div class="blog-banner">
 			<div class="text-center"> -->
-				<?php //if (isset($errMsg)) { 
-				?>
-				<!-- <h1><?php //echo $errMsg; 
-							?></h1> -->
-				<?php //} else {  
-				?>
-				<!-- <h1><?php echo $product["name"]; ?></h1> -->
-				<?php //}  
-				?>
-				<!-- <nav aria-label="breadcrumb" class="banner-breadcrumb">
+<?php //if (isset($errMsg)) { 
+?>
+<!-- <h1><?php //echo $errMsg; 
+			?></h1> -->
+<?php //} else {  
+?>
+<!-- <h1><?php echo $product["name"]; ?></h1> -->
+<?php //}  
+?>
+<!-- <nav aria-label="breadcrumb" class="banner-breadcrumb">
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item"><a href="#">Home</a></li>
 						<li class="breadcrumb-item active" aria-current="page">Shop Single</li>
@@ -113,19 +114,17 @@ require_once 'layout/header.php';
 						<li><a href="#"><span>Availibility</span> : <?php echo $product["status"]; ?></a></li>
 						<li><a href="#"><span>category</span> : <?php echo $product["status"]; ?></a></li>
 					</ul>
-					
+
 					<p>description: <?php echo $product["description"]; ?></p>
-					<div class="product_count">
+					<div>
 						<label for="qty">Quantity:</label>
-						<!-- <button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;" class="increase items-count" type="button"><i class="ti-angle-left"></i></button> -->
-						<input type="text" name="qty" id="sst" size="2" maxlength="12" value="1" title="Quantity:" class="input-text qty">
-						<!-- <button onclick="var result = document.getElementById('sst'); var sst = result.value; if( false ) result.value--;return false;" class="reduced items-count" type="button"><i class="ti-angle-right"></i></button> -->
-						<a class="button primary-btn" href="single-product.php?id=<?php echo $product["id"]; ?>&add">Add to Cart</a>
+						<form action="single-product.php">
+							<input type="text" name="quantity" size="2" maxlength="12" value="1" title="Quantity:" class="input-text qty">
+							<input type="hidden" name="id" value="<?php echo $product["id"]; ?>" >
+							<input type="hidden" name="add" value="" >
+							<button class="button primary-btn" >Add to Cart</button>
+						</form>
 					</div>
-					<!-- <div class="card_area d-flex align-items-center">
-						<a class="icon_btn" href="#"><i class="lnr lnr lnr-diamond"></i></a>
-						<a class="icon_btn" href="#"><i class="lnr lnr lnr-heart"></i></a>
-					</div> -->
 				</div>
 			</div>
 		</div>

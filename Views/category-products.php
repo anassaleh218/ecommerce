@@ -209,9 +209,15 @@ require_once 'layout/header.php';
                   <div class="card-product__img">
                     <img class="card-img" src="<?php echo $product['image'] ?>" alt="<?php echo $product['name'] ?>">
                     <ul class="card-product__imgOverlay">
-                      <li><button><i class="ti-search"></i></button></li>
-                      <li><button><i class="ti-shopping-cart"></i></button></li>
-                      <li><button><a href="category-products.php?pid=<?php echo $product["id"]; ?>&add"><i class="ti-heart"></i></a></button></li>
+                      <!-- <li><button><i class="ti-search"></i></button></li> -->
+                      <li>
+                        <form action="single-product.php">
+                          <input type="hidden" name="quantity" value="1">
+                          <input type="hidden" name="id" value="<?php echo $product["id"]; ?>" >
+                          <input type="hidden" name="add" value="" >
+                          <button><i class="ti-shopping-cart"></i></button>
+                        </form>
+                      </li>                      <li><button><a href="category-products.php?pid=<?php echo $product["id"]; ?>&add"><i class="ti-heart"></i></a></button></li>
                     </ul>
                   </div>
                   <div class="card-body">

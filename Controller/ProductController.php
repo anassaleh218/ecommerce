@@ -15,7 +15,7 @@ class ProductController
          // $query="select * from category";
          $query = "SELECT 
             category.*, 
-            SUM(product.quantity) as categoryQuantity
+            COUNT(product.id) as categoryQuantity
           FROM 
             category 
           LEFT JOIN 
@@ -35,13 +35,20 @@ class ProductController
    {
       $this->db = new DBController;
       if ($this->db->openConnection()) {
-         $query = "select product.id,product.name,start_price as price,quantity,product.image,SUM(product.quantity) AS categoryQuantity,category.name as 'category' 
+         $query = "select product.id,product.name,start_price as price,quantity,product.image,category.name as 'category' 
             from product
             join category on product.category_id=category.id
             where product.category_id=category.id
             and category.id = $id
             order by product.id asc
             ";
+            // $query = "select product.id,product.name,start_price as price,quantity,product.image,SUM(product.quantity) AS categoryQuantity,category.name as 'category' 
+            // from product
+            // join category on product.category_id=category.id
+            // where product.category_id=category.id
+            // and category.id = $id
+            // order by product.id asc
+            // ";
          return $this->db->select($query);
       } else {
          echo "Error in Database Connection";
