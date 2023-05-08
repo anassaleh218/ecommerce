@@ -25,14 +25,14 @@ if ($auth->getCurrentUser() != false) {
       session_start();
     }
     $_SESSION["errMsg"] =  "you must be Admin";
-    header("location: ../views/login.php");
+    header("location: ../Views/login.php");
   }
 } else {
   if (session_status() === PHP_SESSION_NONE) {
     session_start();
   }
   $_SESSION["errMsg"] =  "you must login or regester first";
-  header("location: ../views/login.php");
+  header("location: ../Views/login.php");
 }
 /////////////////////////////////////////
 
