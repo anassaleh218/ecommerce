@@ -110,7 +110,7 @@ require_once 'layout/header.php';
 							<input type="text" class="form-control" id="email" name="email" placeholder="Email Address" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email Address'">
 						</div>
 						<div class="col-md-12 form-group">
-							<input type="text" class="form-control" id="password" name="password" placeholder="Password" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Password'">
+							<input type="password" class="form-control" id="password" name="password" placeholder="Password" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Password'">
 						</div>
 						<div class="col-md-12 form-group">
 							<input type="text" class="form-control" id="phone" name="phone" placeholder="phone no" onfocus="this.placeholder = ''" onblur="this.placeholder = 'phone no'">

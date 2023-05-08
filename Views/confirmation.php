@@ -10,18 +10,32 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 
+//// check if user is login ////
+$auth = new AuthController;
+if ($auth->getCurrentUser() != false) {
+} else {
+  if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+  }
+  $_SESSION["errMsg"] =  "you must login or regester first";
+  header("location: ../Views/login.php");
+}
+////////////////////////////////
+
+///////////////
 if (isset($_GET['orderid'])) {
   if (!empty($_GET['orderid'])) {
-
-
     $orderId = $_GET['orderid'];
-
     $order=new OrderController;
     $orderItems=$order->getOrderItems($orderId);
     $orderSubtotal=$order->getOrderProductsSubtotal($orderId)[0]['subtotal'];
+  }else{
+    header("location: ../Views/cart.php");
   }
+}else{
+  header("location: ../Views/cart.php");
 }
-
+///////////////
 ?>
 
 

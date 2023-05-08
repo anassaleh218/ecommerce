@@ -61,20 +61,20 @@ if (isset($_GET['id'])) {
 require_once 'layout/header.php';
 ?>
 <!-- ================ start banner area ================= -->
-<section class="blog-banner-area" id="blog">
+<!-- <section class="blog-banner-area" id="blog">
 	<div class="container h-100">
 		<div class="blog-banner">
-			<div class="text-center">
+			<div class="text-center"> -->
 				<?php //if (isset($errMsg)) { 
 				?>
 				<!-- <h1><?php //echo $errMsg; 
 							?></h1> -->
 				<?php //} else {  
 				?>
-				<h1><?php echo $product["name"]; ?></h1>
+				<!-- <h1><?php echo $product["name"]; ?></h1> -->
 				<?php //}  
 				?>
-				<nav aria-label="breadcrumb" class="banner-breadcrumb">
+				<!-- <nav aria-label="breadcrumb" class="banner-breadcrumb">
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item"><a href="#">Home</a></li>
 						<li class="breadcrumb-item active" aria-current="page">Shop Single</li>
@@ -83,7 +83,7 @@ require_once 'layout/header.php';
 			</div>
 		</div>
 	</div>
-</section>
+</section> -->
 <!-- ================ end banner area ================= -->
 
 
@@ -111,8 +111,10 @@ require_once 'layout/header.php';
 					<ul class="list">
 						<li><a class="active" href="#"><span>Color</span> : <?php echo $product["color"]; ?></a></li>
 						<li><a href="#"><span>Availibility</span> : <?php echo $product["status"]; ?></a></li>
+						<li><a href="#"><span>category</span> : <?php echo $product["status"]; ?></a></li>
 					</ul>
-					<p><?php echo $product["description"]; ?></p>
+					
+					<p>description: <?php echo $product["description"]; ?></p>
 					<div class="product_count">
 						<label for="qty">Quantity:</label>
 						<!-- <button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;" class="increase items-count" type="button"><i class="ti-angle-left"></i></button> -->

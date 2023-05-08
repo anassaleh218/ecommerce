@@ -8,29 +8,41 @@ require_once '../Models/billing.php';
 if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
+$errMsg = "";
+//// check if user is login ////////////
+$auth = new AuthController;
+if ($auth->getCurrentUser() != false) {
+} else {
+  if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+  }
+  $_SESSION["errMsg"] =  "you must login or regester first";
+  header("location: ../Views/login.php");
+}
+/////////////////////////////////////////
 
-
+/////////////
 if (isset($_GET['orderid'])) {
   if (!empty($_GET['orderid'])) {
-
     $orderId = $_GET['orderid'];
-
     $order = new OrderController;
     $orderItems = $order->getOrderItems($orderId);
     $orderSubtotal = $order->getOrderProductsSubtotal($orderId)[0]['subtotal'];
+  }else{
+    header("location: ../Views/cart.php");
   }
+}else{
+  header("location: ../Views/cart.php");
 }
-
+/////////////
 $buyer = new Authcontroller;
-
 $buyerId = $buyer->getCurrentUser()->id;
-
 $billing = new Billing;
 
-if (isset($_POST['flat']) && isset($_POST['building']) && isset($_POST['city']) && isset($_POST['country']) && isset($_POST['phone']) && isset($_POST['email']) && isset($_POST['ccName']) && isset($_POST['ccType']) && isset($_POST['ccNum']) && isset($_POST['expMonth']) && isset($_POST['expYear']) && isset($_POST['ccv'])) {
-
-  if (!empty($_POST['flat']) && !empty($_POST['building']) && !empty($_POST['city']) && !empty($_POST['country']) && !empty($_POST['phone']) && !empty($_POST['email']) && !empty($_POST['ccName']) && !empty($_POST['ccType']) && !empty($_POST['ccNum']) && !empty($_POST['expMonth']) && !empty($_POST['expYear']) && !empty($_POST['ccv'])) {
-
+if (isset($_POST['flat']) && isset($_POST['building']) && isset($_POST['city']) && isset($_POST['country']) && isset($_POST['phone']) && isset($_POST['email']) && isset($_POST['ccName']) && isset($_POST['ccType']) && isset($_POST['ccNum']) && isset($_POST['expMonth']) && isset($_POST['expYear']) && isset($_POST['cvv'])) {
+  if (!empty($_POST['flat']) && !empty($_POST['building']) && !empty($_POST['city']) && !empty($_POST['country']) && !empty($_POST['phone']) && !empty($_POST['email']) && !empty($_POST['ccName']) && !empty($_POST['ccType']) && !empty($_POST['ccNum']) && !empty($_POST['expMonth']) && !empty($_POST['expYear']) && !empty($_POST['cvv'])) {
+    // print_r($order->addBilling($billing)); 
+    // echo $orderId;
     $billing->adding($_POST['flat'],$_POST['building'],$_POST['city'],$_POST['country'],$_POST['phone'],$_POST['email'],$_POST['ccName'],$_POST['ccType'],$_POST['ccNum'],$_POST['expMonth'],$_POST['expYear'],$_POST['cvv'],$orderId,$buyerId);
     // $billing->set_flatNo($_POST['flat']);
     // $billing->set_buildingNo($_POST['building']);
@@ -43,12 +55,11 @@ if (isset($_POST['flat']) && isset($_POST['building']) && isset($_POST['city']) 
     // $billing->set_creditCardNum($_POST['ccNum']);
     // $billing->set_expMonth($_POST['expMonth']);
     // $billing->set_expYear($_POST['expYear']);
-    // $billing->set_cvv($_POST['ccv']);
+    // $billing->set_cvv($_POST['cvv']);
     // $billing->set_orderId($orderId);
     // $billing->set_buyerId($buyerId);
-
-    echo $orderId;
     if ($order->addBilling($billing)) {
+      // header("location: ../views/login.php");
     } else {
       $errMsg =$_SESSION["errMsg"] =  "error in adding bill";
     }
@@ -56,7 +67,7 @@ if (isset($_POST['flat']) && isset($_POST['building']) && isset($_POST['city']) 
     $errMsg = $_SESSION["errMsg"];
   }
 } else {
-  $errMsg = "Please fill all fields";
+  // $errMsg = "Please fill all fields";
 }
 
 ?>
@@ -74,7 +85,6 @@ require_once 'layout/header.php';
     <div class="blog-banner">
       <div class="text-center">
       <?php 
-      print_r($order->addBilling($billing)); 
       if ($errMsg != "") {
         ?>
           <div class="alert alert-danger" role="alert"><?php echo $errMsg ?></div>
@@ -135,36 +145,37 @@ require_once 'layout/header.php';
       <div class="row">
         <div class="col-lg-8">
           <h3>Billing Details</h3>
-          <form class="row contact_form" action="checkout.php" method="post" novalidate="novalidate">
+          <form class="row contact_form" action="checkout.php?orderid=<?php echo $orderId; ?>" method="post">
+
             <div class="col-md-6 form-group p_star">
               <label class="form-label">Flat No.</label>
-              <input type="text" class="form-control" name="flat">
+              <input type="text" class="form-control" name="flat" required>
             </div>
             <div class="col-md-6 form-group p_star">
               <label class="form-label">Building No.</label>
-              <input type="text" class="form-control" name="building">
+              <input type="text" class="form-control" name="building" required>
             </div>
             <div class="col-md-6 form-group p_star">
               <label class="form-label">City</label>
-              <input type="text" class="form-control" name="city">
+              <input type="text" class="form-control" name="city" required>
             </div>
             <div class="col-md-6 form-group p_star">
               <label class="form-label">Country</label>
-              <input type="text" class="form-control" name="country">
+              <input type="text" class="form-control" name="country" required>
             </div>
             <!--  -->
             <div class="col-md-6 form-group p_star">
               <label class="form-label">Phone number.</label>
-              <input type="text" class="form-control" name="phone">
+              <input type="text" class="form-control" name="phone" required>
             </div>
             <div class="col-md-6 form-group p_star">
               <label class="form-label">Email Address</label>
-              <input type="text" class="form-control" name="email">
+              <input type="text" class="form-control" name="email" required>
             </div>
 
             <div class="col-md-12 form-group p_star">
               <label class="form-label">Credit Card Holder Name</label>
-              <input type="text" class="form-control" name="ccName">
+              <input type="text" class="form-control" name="ccName" required>
             </div>
 
             <div class="col-md-4 form-group p_star">
@@ -181,18 +192,18 @@ require_once 'layout/header.php';
                   <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1H2zm13 4H1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7z" />
                   <path d="M2 10a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1z" />
                 </svg> Credit Card Number</label>
-              <input type="text" class="form-control" name="ccNum">
+              <input type="text" class="form-control" name="ccNum" required>
             </div>
             <!--  -->
             <div class="col-md-6 form-group p_star">
               <label class="form-label d-block">Exp. Date</label>
-              <input type="number" maxlength="2" class="form-control col-md-4 d-inline " name="expMonth">
+              <input type="number" maxlength="2" class="form-control col-md-4 d-inline " name="expMonth" required>
               <h3 class="d-inline">/</h3>
-              <input type="number" maxlength="2" class="form-control col-md-4 d-inline" name="expYear">
+              <input type="number" maxlength="2" class="form-control col-md-4 d-inline" name="expYear" required>
             </div>
             <div class="col-md-4 form-group p_star">
               <label class="form-label">CVV</label>
-              <input type="number" maxlength="3" class="form-control" name="ccv">
+              <input type="number" maxlength="3" class="form-control" name="cvv" required>
             </div>
             <!--             
             <div class="col-md-12 form-group p_star">
@@ -232,7 +243,7 @@ require_once 'layout/header.php';
               <textarea class="form-control" name="message" id="message" rows="1" placeholder="Order Notes"></textarea>
             </div> -->
             <div class="text-center">
-              <a class="button" href="./checkout.php?orderid=<?php echo $orderId; ?>">Confirm</a>
+              <button type="submit" class="button">send</button>
             </div>
           </form>
         </div>

@@ -212,7 +212,7 @@ require_once 'layout/header.php';
             <?php
             foreach ($products as $product) {
             ?>
-              <div class="col-md-6 col-lg-4">
+              <div class="col-md-6 col-lg-4" >
                 <div class="card text-center card-product">
                   <div class="card-product__img">
                     <img class="card-img" src="<?php echo $product['image'] ?>" alt="<?php echo $product['name'] ?>">
@@ -224,7 +224,7 @@ require_once 'layout/header.php';
                   </div>
                   <div class="card-body">
                     <p><?php echo $product['category'] ?></p>
-                    <h4 class="card-product__title"><a href="single-product.php?id=<?php echo $product['id'] ?>"><?php echo $product['name'] ?></a></h4>
+                    <h4 class="card-product__title"><a class="stretched-link" href="single-product.php?id=<?php echo $product['id'] ?>"><?php echo $product['name'] ?></a></h4>
                     <p class="card-product__price">$<?php echo $product['price'] ?></p>
                   </div>
                 </div>
