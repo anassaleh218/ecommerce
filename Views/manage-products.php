@@ -36,7 +36,7 @@ if (isset($_POST['delete'])) {
     }
 }
 
-$products = $productController->getAllProducts();
+$products = $productController->getSellerProducts($currentUser);
 
 ?>
 

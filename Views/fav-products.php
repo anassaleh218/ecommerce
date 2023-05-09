@@ -19,7 +19,6 @@ require_once '../Controller/ProductController.php';
 $auth = new AuthController;
 $productController = new ProductController;
 
-
 if ($auth->getCurrentUser() != false) {
   $currentUser = $auth->getCurrentUser();
 } else {
@@ -32,41 +31,32 @@ if ($auth->getCurrentUser() != false) {
 
 if (isset($_GET['pfid'])) {
   if (!empty($_GET['pfid'])) {
-      if ($productController->removeFav($_GET['pid'])) {
-          $deleteMsg = "Product Deleted Successfully";
-          $productController->getFav($currentUser);
-      }
+    $id =  $_GET['pfid'];
+    if ($productController->removeFav($id)) {
+      echo "<div class=\"alert alert-success\" role=\"alert\">Product Deleted Successfully</div>";
+    } else {
+      echo "<div class=\"alert alert-danger\" role=\"alert\">can't delete Product</div>";
+    }
   }
 }
 
-
+/////// add to watch list if addtowatchlist is set ///////
+if (isset($_GET['pwid'])) {
+  if (!empty($_GET['pwid'])) {
+    if (isset($_GET['addtowatchlist'])) {
+      try {
+        $productController->addToWatchlist($currentUser, $_GET['pwid']);
+        echo "<div class=\"alert alert-success\" role=\"alert\">added successfully</div>";
+      } catch (Exception $e) {
+        echo "<div class=\"alert alert-success\" role=\"alert\">already exists in the <a href=\"watchlist.php\">Watch List Page</a> </div>";
+      }
+    }
+  }
+}
+/////////// ////////////////////////// ///////////
 
 $products = $productController->getFav($currentUser);
 
-
-// function handleClick()
-// {
-//   global $productController;
-//   if (isset($_GET["id"])) {
-//     if (!empty($_GET["id"])) {
-//       $products = $productController->getCategoryProducts($_GET["id"]);
-//     } else {
-//       header("location: index.php");
-//     }
-//   } else {
-//     header("location: index.php");
-//   }
-// }
-
-///
-
-/*
-onclick="window.location.href='category-products.php?id=<?php echo $category['id'] ?>';"
-
-////
-
-
-*/
 
 
 ?>
@@ -83,11 +73,11 @@ require_once 'layout/header.php';
   <div class="container h-100">
     <div class="blog-banner">
       <div class="text-center">
-        <h1>Shop Category</h1>
+        <h1>Favourites</h1>
         <nav aria-label="breadcrumb" class="banner-breadcrumb">
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="#">Home</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Shop Category</li>
+            <li class="breadcrumb-item active" aria-current="page">Favourites Page</li>
           </ol>
         </nav>
       </div>
@@ -176,23 +166,11 @@ require_once 'layout/header.php';
       <div class="col-xl-12 col-lg-8 col-md-7">
         <!-- Start Filter Bar -->
         <div class="filter-bar d-flex flex-wrap align-items-center">
-          <!-- <div class="sorting">
-            <select>
-              <option value="1">Default sorting</option>
-              <option value="1">Default sorting</option>
-              <option value="1">Default sorting</option>
-            </select>
-          </div>
-          <div class="sorting mr-auto">
-            <select>
-              <option value="1">Show 12</option>
-              <option value="1">Show 12</option>
-              <option value="1">Show 12</option>
-            </select>
-          </div> -->
           <div>
             <div class="input-group filter-bar-search">
-              <input type="text" placeholder="Search">
+              <form action="search.php">
+              <input type="text" name="search" placeholder="Search">
+              </form>
               <div class="input-group-append">
                 <button type="button"><i class="ti-search"></i></button>
               </div>
@@ -209,10 +187,17 @@ require_once 'layout/header.php';
               <div class="col-md-6 col-lg-4">
                 <div class="card text-center card-product">
                   <div class="card-product__img">
-                    <img class="card-img" src="<?php echo $product['image'] ?>" alt="<?php echo $product['name'] ?>">
+                    <img class="card-img" src="<?php echo $product['image'] ?>" style="width: 300px;height: 300px;object-fit: cover;" alt="<?php echo $product['name'] ?>">
                     <ul class="card-product__imgOverlay">
-                    <li><a href="watchlist.php?pwid=<?php echo $product["id"]; ?>"><button><i class="fa-solid fa-bookmark-slash"></i></button></a></li>
-                      <li><button><i class="ti-shopping-cart"></i></button></li>
+                      <li>
+                        <form action="single-product.php">
+                          <input type="hidden" name="quantity" value="1">
+                          <input type="hidden" name="id" value="<?php echo $product["id"]; ?>">
+                          <input type="hidden" name="add" value="">
+                          <button><i class="ti-shopping-cart"></i></button>
+                        </form>
+                      </li>
+                      <li><a href="fav-products.php?pwid=<?php echo $product["id"]; ?>&addtowatchlist"><button><i class="fa-solid fa-bookmark"></i></button></a></li>
                       <li><a href="fav-products.php?pfid=<?php echo $product["id"]; ?>"><button><i class="ti-heart-broken"></i></button></a></li>
                     </ul>
                   </div>
@@ -233,121 +218,6 @@ require_once 'layout/header.php';
 </section>
 <!-- ================ category section end ================= -->
 
-<!-- ================ top product area start ================= -->
-<!-- <section class="related-product-area">
-  <div class="container">
-    <div class="section-intro pb-60px">
-      <p>Popular Item in the market</p>
-      <h2>Top <span class="section-intro__style">Product</span></h2>
-    </div>
-    <div class="row mt-30">
-      <div class="col-sm-6 col-xl-3 mb-4 mb-xl-0">
-        <div class="single-search-product-wrapper">
-          <div class="single-search-product d-flex">
-            <a href="#"><img src="asstes/img/product/product-sm-1.png" alt=""></a>
-            <div class="desc">
-              <a href="#" class="title">Gray Coffee Cup</a>
-              <div class="price">$170.00</div>
-            </div>
-          </div>
-          <div class="single-search-product d-flex">
-            <a href="#"><img src="asstes/img/product/product-sm-2.png" alt=""></a>
-            <div class="desc">
-              <a href="#" class="title">Gray Coffee Cup</a>
-              <div class="price">$170.00</div>
-            </div>
-          </div>
-          <div class="single-search-product d-flex">
-            <a href="#"><img src="asstes/img/product/product-sm-3.png" alt=""></a>
-            <div class="desc">
-              <a href="#" class="title">Gray Coffee Cup</a>
-              <div class="price">$170.00</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-sm-6 col-xl-3 mb-4 mb-xl-0">
-        <div class="single-search-product-wrapper">
-          <div class="single-search-product d-flex">
-            <a href="#"><img src="asstes/img/product/product-sm-4.png" alt=""></a>
-            <div class="desc">
-              <a href="#" class="title">Gray Coffee Cup</a>
-              <div class="price">$170.00</div>
-            </div>
-          </div>
-          <div class="single-search-product d-flex">
-            <a href="#"><img src="asstes/img/product/product-sm-5.png" alt=""></a>
-            <div class="desc">
-              <a href="#" class="title">Gray Coffee Cup</a>
-              <div class="price">$170.00</div>
-            </div>
-          </div>
-          <div class="single-search-product d-flex">
-            <a href="#"><img src="asstes/img/product/product-sm-6.png" alt=""></a>
-            <div class="desc">
-              <a href="#" class="title">Gray Coffee Cup</a>
-              <div class="price">$170.00</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-sm-6 col-xl-3 mb-4 mb-xl-0">
-        <div class="single-search-product-wrapper">
-          <div class="single-search-product d-flex">
-            <a href="#"><img src="asstes/img/product/product-sm-7.png" alt=""></a>
-            <div class="desc">
-              <a href="#" class="title">Gray Coffee Cup</a>
-              <div class="price">$170.00</div>
-            </div>
-          </div>
-          <div class="single-search-product d-flex">
-            <a href="#"><img src="asstes/img/product/product-sm-8.png" alt=""></a>
-            <div class="desc">
-              <a href="#" class="title">Gray Coffee Cup</a>
-              <div class="price">$170.00</div>
-            </div>
-          </div>
-          <div class="single-search-product d-flex">
-            <a href="#"><img src="asstes/img/product/product-sm-9.png" alt=""></a>
-            <div class="desc">
-              <a href="#" class="title">Gray Coffee Cup</a>
-              <div class="price">$170.00</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-sm-6 col-xl-3 mb-4 mb-xl-0">
-        <div class="single-search-product-wrapper">
-          <div class="single-search-product d-flex">
-            <a href="#"><img src="asstes/img/product/product-sm-1.png" alt=""></a>
-            <div class="desc">
-              <a href="#" class="title">Gray Coffee Cup</a>
-              <div class="price">$170.00</div>
-            </div>
-          </div>
-          <div class="single-search-product d-flex">
-            <a href="#"><img src="asstes/img/product/product-sm-2.png" alt=""></a>
-            <div class="desc">
-              <a href="#" class="title">Gray Coffee Cup</a>
-              <div class="price">$170.00</div>
-            </div>
-          </div>
-          <div class="single-search-product d-flex">
-            <a href="#"><img src="asstes/img/product/product-sm-3.png" alt=""></a>
-            <div class="desc">
-              <a href="#" class="title">Gray Coffee Cup</a>
-              <div class="price">$170.00</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section> -->
-<!-- ================ top product area end ================= -->
 
 <!-- ================ Subscribe section start ================= -->
 <section class="subscribe-position">

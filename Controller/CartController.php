@@ -44,10 +44,9 @@ class CartController
                 if (session_status() === PHP_SESSION_NONE) {
                     session_start();
                 }
-                // $_SESSION["cart_id"] = $result;
                 return true;
             } else {
-                $_SESSION["errMsg"] = "Somthing went wrong... try again later";
+                // $_SESSION["errMsg"] = "Somthing went wrong... try again later";
                 return false;
             }
         } else {

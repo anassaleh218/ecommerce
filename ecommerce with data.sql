@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 08, 2023 at 11:10 PM
+-- Generation Time: May 09, 2023 at 10:57 PM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 8.1.2
 
@@ -32,6 +32,15 @@ CREATE TABLE `cart` (
   `buyer_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `cart`
+--
+
+INSERT INTO `cart` (`id`, `buyer_id`) VALUES
+(1, 1),
+(2, 2),
+(3, 3);
+
 -- --------------------------------------------------------
 
 --
@@ -55,6 +64,15 @@ CREATE TABLE `category` (
   `name` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `category`
+--
+
+INSERT INTO `category` (`id`, `name`) VALUES
+(1, 'phones'),
+(2, 'laptops'),
+(3, 'electronics');
+
 -- --------------------------------------------------------
 
 --
@@ -65,6 +83,13 @@ CREATE TABLE `fav_products` (
   `buyer_id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `fav_products`
+--
+
+INSERT INTO `fav_products` (`buyer_id`, `product_id`) VALUES
+(2, 1);
 
 -- --------------------------------------------------------
 
@@ -78,6 +103,13 @@ CREATE TABLE `order` (
   `order_status` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `order`
+--
+
+INSERT INTO `order` (`id`, `buyer_id`, `order_status`) VALUES
+(1, 2, '');
+
 -- --------------------------------------------------------
 
 --
@@ -88,6 +120,7 @@ CREATE TABLE `order_billing` (
   `id` int(11) NOT NULL,
   `flatNo` int(11) NOT NULL,
   `buildingNo` int(11) NOT NULL,
+  `street` varchar(50) NOT NULL,
   `city` varchar(20) NOT NULL,
   `country` varchar(20) NOT NULL,
   `phone` varchar(20) NOT NULL,
@@ -99,7 +132,8 @@ CREATE TABLE `order_billing` (
   `expYear` int(11) NOT NULL,
   `cvv` int(11) NOT NULL,
   `order_id` int(11) NOT NULL,
-  `buyer_id` int(11) NOT NULL
+  `buyer_id` int(11) NOT NULL,
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -113,6 +147,13 @@ CREATE TABLE `order_product` (
   `order_id` int(11) NOT NULL,
   `quantity` int(11) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `order_product`
+--
+
+INSERT INTO `order_product` (`product_id`, `order_id`, `quantity`) VALUES
+(1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -148,6 +189,38 @@ CREATE TABLE `product` (
   `image` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `product`
+--
+
+INSERT INTO `product` (`id`, `name`, `description`, `quantity`, `status`, `color`, `size_id`, `start_price`, `category_id`, `seller_id`, `image`) VALUES
+(1, 'iPhone 14 Pro', 'Premium finish\r\nBrand: Apple\r\nIt will be an excellent pick for you\r\nComes with proper packaging', 213, 'Available', 'gold', NULL, 399.99, 1, 1, 'images/10-34-5661HHS0HrjpL._AC_SL1500_.jpg'),
+(2, 'Xiaomi Redmi 10A ', 'Released 2022, March 31\r\nAndroid 11, MIUI 12.5\r\nResolution 720 x 1600 pixels,\r\nFingerprint (rear-mou', 22, 'Available', 'red', NULL, 100, 1, 1, 'images/10-36-1161NCeh9qd3L._AC_SL1215_.jpg'),
+(3, 'IdeaPad 3', 'Technical Specifications\r\nProcessor : Intel Core i3-1115G4 (2C / 4T, 3.0 / 4.1GHz, 6MB) /Memory : 4G', 123, 'Available', 'red', NULL, 2311, 2, 1, 'images/10-37-2751DzvZ3Eq2L._AC_.jpg'),
+(4, 'Lenovo IdeaPad 1 Lap', 'Lenovo IdeaPad 3 Laptop - Intel Core i3-10110U, 8 GB RAM, 1 TB HDD, Intel UHD Graphics,  15.6\" FHD (', 34, 'Available', 'gold', NULL, 3088, 2, 1, 'images/10-38-4141zezCpPE8L._AC_.jpg'),
+(5, 'Smart LED TV', 'TV with Built-in Receiver and Remote Control\r\nModel : UA50CU7000UXEG\r\nSamsung 50 Inch 4K UHD Smart L', 11, 'Available', 'red', 1, 3121, 3, 1, 'images/10-40-3761ckfbfWrfL._AC_SL1000_.jpg');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `product_feedback`
+--
+
+CREATE TABLE `product_feedback` (
+  `id` int(11) NOT NULL,
+  `rate` int(11) NOT NULL,
+  `feedback` text NOT NULL,
+  `buyer_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `product_feedback`
+--
+
+INSERT INTO `product_feedback` (`id`, `rate`, `feedback`, `buyer_id`, `product_id`) VALUES
+(1, 4, 'very good iPhone', 2, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -158,6 +231,14 @@ CREATE TABLE `product_size` (
   `id` int(11) NOT NULL,
   `name` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `product_size`
+--
+
+INSERT INTO `product_size` (`id`, `name`) VALUES
+(1, '50 Inch'),
+(2, '20 Inch');
 
 -- --------------------------------------------------------
 
@@ -181,6 +262,15 @@ CREATE TABLE `role` (
   `role_name` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `role`
+--
+
+INSERT INTO `role` (`id`, `role_name`) VALUES
+(1, 'admin'),
+(2, 'buyer'),
+(3, 'seller');
+
 -- --------------------------------------------------------
 
 --
@@ -192,12 +282,21 @@ CREATE TABLE `user` (
   `fullname` varchar(20) NOT NULL,
   `username` varchar(20) NOT NULL,
   `email` varchar(20) NOT NULL,
-  `password` varchar(20) NOT NULL,
+  `password` longtext NOT NULL,
   `phone` varchar(20) NOT NULL,
   `address` varchar(20) DEFAULT NULL,
   `blocked` tinyint(1) NOT NULL DEFAULT 0,
   `role_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `user`
+--
+
+INSERT INTO `user` (`id`, `fullname`, `username`, `email`, `password`, `phone`, `address`, `blocked`, `role_id`) VALUES
+(1, 'seller', 'seller', 'seller@gmail.com', '$2y$10$nLNhHH.3yWhOvcSpmYV32u5pEeRLCS3HrpBE1ZZCqKXdGRriCk4Qu', '01288600785', '17 Kamal Al Sharif S', 0, 3),
+(2, 'buyer', 'buyer', 'buyer@gmail.com', '$2y$10$XyiOTLC9ctoDvQ55ANnuW.VEy/U8Ej4Q4vdi9UFHz9ead/WloVLYq', '01288600785', '17 Kamal Al Sharif S', 0, 2),
+(3, 'admin', 'admin', 'admin@gmail.com', '$2y$10$ov4wwBu1lTXOrvxmcBCywOvJVy3cZByRtGKdciR7hMjW5niNEy44a', '01288600785', '17 Kamal Al Sharif S', 0, 1);
 
 -- --------------------------------------------------------
 
@@ -238,6 +337,7 @@ ALTER TABLE `category`
 -- Indexes for table `fav_products`
 --
 ALTER TABLE `fav_products`
+  ADD PRIMARY KEY (`buyer_id`,`product_id`),
   ADD KEY `fav_product_buyer` (`buyer_id`),
   ADD KEY `fav_product_product` (`product_id`);
 
@@ -278,6 +378,14 @@ ALTER TABLE `product`
   ADD KEY `product_size` (`size_id`),
   ADD KEY `product_category` (`category_id`),
   ADD KEY `product_seller` (`seller_id`);
+
+--
+-- Indexes for table `product_feedback`
+--
+ALTER TABLE `product_feedback`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `product_feedback_product` (`product_id`),
+  ADD KEY `product_feedback_buyer` (`buyer_id`);
 
 --
 -- Indexes for table `product_size`
@@ -321,19 +429,19 @@ ALTER TABLE `watch_list`
 -- AUTO_INCREMENT for table `cart`
 --
 ALTER TABLE `cart`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `category`
 --
 ALTER TABLE `category`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `order`
 --
 ALTER TABLE `order`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `order_billing`
@@ -351,25 +459,31 @@ ALTER TABLE `payment`
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `product_feedback`
+--
+ALTER TABLE `product_feedback`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `product_size`
 --
 ALTER TABLE `product_size`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `role`
 --
 ALTER TABLE `role`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Constraints for dumped tables
@@ -428,6 +542,13 @@ ALTER TABLE `product`
   ADD CONSTRAINT `product_category` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`),
   ADD CONSTRAINT `product_seller` FOREIGN KEY (`seller_id`) REFERENCES `user` (`id`),
   ADD CONSTRAINT `product_size` FOREIGN KEY (`size_id`) REFERENCES `product_size` (`id`);
+
+--
+-- Constraints for table `product_feedback`
+--
+ALTER TABLE `product_feedback`
+  ADD CONSTRAINT `product_feedback_buyer` FOREIGN KEY (`buyer_id`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `product_feedback_product` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`);
 
 --
 -- Constraints for table `purchase`

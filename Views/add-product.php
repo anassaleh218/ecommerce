@@ -43,7 +43,7 @@ if (isset($_POST['name']) && isset($_POST['category']) && isset($_POST['size']) 
 
     if (move_uploaded_file($_FILES["img"]["tmp_name"], $location)) {
       $product->image = $location;
-      if ($productController->addProduct($product)) {
+      if ($productController->addProduct($currentUser, $product)) {
         // header("location: manage-products.php");
         echo ("<script>location.href = 'http://localhost/ecommerce/views/manage-products.php';</script>");
       } else {
@@ -105,12 +105,12 @@ if ($errMsg != "") {
         <div class="form-row">
           <div class="form-group col-md-6">
             <label for="inputEmail4">Product Name</label>
-            <input type="text" name="name" class="form-control" id="inputEmail4" placeholder="Name">
+            <input type="text" name="name" class="form-control" id="inputEmail4" placeholder="Name" required>
           </div>
         </div>
 
         <div class="form-row mb-2">
-          <select class="form-select mx-1" name="category" aria-label="Default select example">
+          <select class="form-select mx-1" name="category" aria-label="Default select example" required>
             <option value="" selected disabled>Select Category</option>
             <?php
             foreach ($categories as $category) {
@@ -149,7 +149,7 @@ if ($errMsg != "") {
         <div class="form-row">
           <div class="form-group col-md-5">
             <label for="inputEmail4">Product Color</label>
-            <input type="text" name="color" class="form-control" id="inputEmail4" placeholder="Color">
+            <input type="text" name="color" class="form-control" id="inputEmail4" placeholder="Color" required>
           </div>
         </div>
 
@@ -163,13 +163,13 @@ if ($errMsg != "") {
 
           <div class="form-group col-md-6">
             <label for="inputEmail4">Product Quantity</label>
-            <input type="number" name="quantity" class="form-control" id="inputEmail4">
+            <input type="number" name="quantity" class="form-control" id="inputEmail4" required>
           </div>
 
           <div class="form-group col-md-6">
             <label for="inputEmail4">Product Price</label>
             <div class="input-group mb-3">
-              <input type="number" step="0.01" placeholder="0.00" name="price" class="form-control" aria-label="Amount (to the nearest dollar)">
+              <input type="number" step="0.01" placeholder="0.00" name="price" class="form-control" aria-label="Amount (to the nearest dollar)" required>
               <span class="input-group-text">$</span>
             </div>
           </div>
@@ -178,7 +178,7 @@ if ($errMsg != "") {
 
         <div class="mb-3">
           <label for="formFileMultiple" class="form-label">Add Product Photos</label>
-          <input class="form-control" type="file" name="img" id="formFileMultiple" multiple>
+          <input class="form-control" type="file" name="img" id="formFileMultiple" required>
         </div>
 
         <!--

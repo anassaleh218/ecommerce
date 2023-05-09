@@ -20,10 +20,10 @@
             <div class="single-footer-widget tp_widgets">
               <h4 class="footer_title">Quick Links</h4>
               <ul class="list">
-                <li><a href="../index.php">Home</a></li>
-                <li><a href="../products.php">Shop</a></li>
-                <li><a href="../fav-products.php">Favourites</a></li>
-                <li><a href="../watchlist.php">Watch List</a></li>
+                <li><a href="index.php">Home</a></li>
+                <li><a href="products.php">Shop</a></li>
+                <li><a href="fav-products.php">Favourites</a></li>
+                <li><a href="watchlist.php">Watch List</a></li>
               </ul>
             </div>
           </div>

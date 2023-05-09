@@ -34,7 +34,6 @@ class OrderController
                 if (session_status() === PHP_SESSION_NONE) {
                     session_start();
                 }
-                // $_SESSION["cart_id"] = $result;
                 return $result;
             } else {
                 $_SESSION["errMsg"] = "Somthing went wrong... try again later";
@@ -73,7 +72,7 @@ class OrderController
                 $this->db->closeConnection();
                 return true;
             } else {
-                $_SESSION["errMsg"] = "Somthing went wrong... try again later";
+                // $_SESSION["errMsg"] = "Somthing went wrong... try again later";
                 $this->db->closeConnection();
                 return false;
             }

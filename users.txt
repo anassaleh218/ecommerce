@@ -1,0 +1,11 @@
+seller
+seller@gmail.com
+123456
+______________
+buyer
+buyer@gmail.com
+123456
+______________
+admin
+admin@gmail.com
+123456

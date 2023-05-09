@@ -4,16 +4,6 @@ require_once '../Controller/Authcontroller.php';
 $errMsg = "";
 
 
-if (!isset($_SESSION["errMsg"])) {
-	session_start();
-	if (isset($_SESSION["errMsg"])) {
-		echo "<div class=\"alert alert-danger\" role=\"alert\">" . $_SESSION["errMsg"] . "</div>";
-		unset($_SESSION['errMsg']);
-	}
-	// session_destroy();
-}
-
-
 if (isset($_POST['username']) && isset($_POST['password'])) {
 	if (!empty($_POST['username']) && !empty($_POST['password'])) {
 
@@ -22,12 +12,13 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
 		$user->username = $_POST['username'];
 		$user->password = $_POST['password'];
 		if (!$auth->login($user)) {
-			if (!isset($_SESSION["id"])) {
+			if (session_status() === PHP_SESSION_NONE) {
 				session_start();
 			}
-			echo $_SESSION["errMsg"];
-			// $errMsg = $_SESSION["id"];
-
+			echo "<div class=\"alert alert-danger\" role=\"alert\">" . $_SESSION["errMsg"] . "</div>";
+			if (isset($_SESSION["errMsg"])) {
+				unset($_SESSION['errMsg']);
+			}
 
 		} else {
 			//////////

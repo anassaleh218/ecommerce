@@ -70,7 +70,7 @@ class ProductController
    }
 
 
-   public function addProduct(Product $product)
+   public function addProduct(User $user, Product $product)
    {
       $this->db = new DBController;
       if ($this->db->openConnection()) {
@@ -80,7 +80,7 @@ class ProductController
             $product->status = 'Available';
          }
          // $product->sellerid=
-         $query = "insert into product values ('','$product->name','$product->description','$product->quantity','$product->status','$product->color',$product->sizeid,'$product->price',$product->categoryid,'2','$product->image')";
+         $query = "insert into product values ('','$product->name','$product->description','$product->quantity','$product->status','$product->color',$product->sizeid,'$product->price',$product->categoryid, $user->id,'$product->image')";
          return $this->db->insert($query);
       } else {
          echo "Error in Database Connection";
@@ -100,6 +100,33 @@ class ProductController
          return false;
       }
    }
+
+
+   public function search($name)
+   {
+      $this->db = new DBController;
+      if ($this->db->openConnection()) {
+         $query = "select product.id,product.name,start_price as price,quantity,product.image,category.name as 'category'  from product join category on product.category_id=category.id WHERE product.name LIKE '%$name%' order by product.id asc";
+         return $this->db->select($query);
+      } else {
+         echo "Error in Database Connection";
+         return false;
+      }
+   }
+
+
+   public function getSellerProducts(User $user)
+   {
+      $this->db = new DBController;
+      if ($this->db->openConnection()) {
+         $query = "select product.id,product.name,start_price as price,quantity,product.image,category.name as 'category'  from product join category on product.category_id=category.id WHERE product.seller_id = $user->id order by product.id asc";
+         return $this->db->select($query);
+      } else {
+         echo "Error in Database Connection";
+         return false;
+      }
+   }
+
 
    public function deleteProduct($id)
    {
@@ -131,12 +158,12 @@ class ProductController
    }
 
 
-   public function updateProduct(Product $product, $id)
+   public function updateProduct(User $user, Product $product, $id)
    {
 
       $this->db = new DBController;
       if ($this->db->openConnection()) {
-         $query = "update product set name = '$product->name',color = '$product->color',description = '$product->description',quantity = '$product->quantity',status = '$product->status',start_price = '$product->price',category_id = '$product->categoryid',seller_id = '2',image = '$product->image' WHERE product.id = '$id'";
+         $query = "update product set name = '$product->name',color = '$product->color',description = '$product->description',quantity = '$product->quantity',status = '$product->status',start_price = '$product->price',category_id = '$product->categoryid',seller_id = '$user->id',image = '$product->image' WHERE product.id = '$id'";
          //  $query="update user set `blocked` = '1' WHERE user.email = \"".$email."\"";
          $result = $this->db->update($query);
          if ($result != false) {
@@ -222,6 +249,22 @@ class ProductController
          INNER JOIN category ON product.category_id = category.id
          WHERE fav_products.buyer_id ='" . $user->id . "'";
          return $this->db->select($query);
+      } else {
+         echo "Error in Database Connection";
+         return false;
+      }
+   }
+
+   public function isFav(User $user, $product_id)
+   {
+      $this->db = new DBController;
+      if ($this->db->openConnection()) {
+         $query = "select product.*,category.name as category
+         FROM product
+         INNER JOIN fav_products ON product.id = fav_products.product_id 
+         INNER JOIN category ON product.category_id = category.id
+         WHERE fav_products.buyer_id ='" . $user->id . "' AND fav_products.product_id ='" . $product_id . "'";
+         return true;
       } else {
          echo "Error in Database Connection";
          return false;

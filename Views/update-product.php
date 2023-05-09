@@ -11,6 +11,26 @@ $sizes = $productController->getSizes();
 
 $errMsg = "";
 
+//// check if user is login and seller /////
+$auth = new AuthController;
+if ($auth->getCurrentUser() != false) {
+  $currentUser = $auth->getCurrentUser();
+  if ($auth->getUserRole($currentUser) != "seller") {
+    if (session_status() == PHP_SESSION_NONE) {
+      session_start();
+    }
+    $_SESSION["errMsg"] =  "you must be Seller";
+    header("location: ../views/login.php");
+  }
+} else {
+  if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+  }
+  $_SESSION["errMsg"] =  "you must login or regester first";
+  header("location: ../views/login.php");
+}
+/////////////////////////////////////////
+
 if (isset($_POST['productId'])) {
   if (!empty($_POST['productId'])) {
     $product = $productController->getProductById($_POST['productId']);
@@ -24,7 +44,7 @@ if (isset($_POST['productId'])) {
 
         if (move_uploaded_file($_FILES["img"]["tmp_name"], $location)) {
           $product->image = $location;
-          if ($productController->updateProduct($product, $_POST['productId'])) {
+          if ($productController->updateProduct($currentUser, $product, $_POST['productId'])) {
             // header("location: manage-products.php");
             echo ("<script>location.href = 'http://localhost/ecommerce/views/manage-products.php';</script>");
           } else {
@@ -125,6 +145,7 @@ if ($errMsg != "") {
           <select class="form-group form-select mx-1" name="size" aria-label="Default select example">
 
             <option value="" disabled>Select Size</option>
+            <option value="NULL" selected>No Size</option>
             <?php
             foreach ($sizes as $size) {
               if ($size["id"] == $product[0]["size_id"]) {
@@ -145,7 +166,7 @@ if ($errMsg != "") {
         <div class="form-row">
           <div class="form-group col-md-5">
             <label for="inputEmail4">Product Color</label>
-            <input type="text" name="color" class="form-control" value="<?php echo $product[0]["color"]; ?>" id="inputEmail4" placeholder="Color">
+            <input type="text" name="color" class="form-control" value="<?php echo $product[0]["color"]; ?>" id="inputEmail4" placeholder="Color" required>
           </div>
         </div>
 
@@ -159,13 +180,13 @@ if ($errMsg != "") {
 
           <div class="form-group col-md-6">
             <label for="inputEmail4">Product Quantity</label>
-            <input type="number" name="quantity" class="form-control" value="<?php echo $product[0]["quantity"]; ?>" id="inputEmail4">
+            <input type="number" name="quantity" class="form-control" value="<?php echo $product[0]["quantity"]; ?>" id="inputEmail4" required>
           </div>
 
           <div class="form-group col-md-6">
             <label for="inputEmail4">Product Price</label>
             <div class="input-group mb-3">
-              <input type="number" step="0.01" placeholder="0.00" name="price" value="<?php echo $product[0]["start_price"]; ?>" class="form-control" aria-label="Amount (to the nearest dollar)">
+              <input type="number" step="0.01" placeholder="0.00" name="price" value="<?php echo $product[0]["start_price"]; ?>" class="form-control" aria-label="Amount (to the nearest dollar)" required>
               <span class="input-group-text">$</span>
             </div>
           </div>
@@ -173,9 +194,9 @@ if ($errMsg != "") {
         </div>
 
         <div class="mb-3">
-          <img src="<?php echo $product[0]['image'] ?>" alt="<?php echo $product[0]['name'] ?>" width="250"><br />
+          <img src="<?php echo $product[0]['image'] ?>"  alt="<?php echo $product[0]['name'] ?>" width="250"><br />
           <label for="formFileMultiple" class="form-label">Add Product Photos</label>
-          <input class="form-control" type="file" name="img" id="formFileMultiple" multiple>
+          <input class="form-control" type="file" name="img" id="formFileMultiple" required>
         </div>
 
         <!--

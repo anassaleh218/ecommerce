@@ -13,7 +13,7 @@ class Authcontroller
         $this->db = new DBController;
         if ($this->db->openConnection()) {
 
-            $query = "select * from user where username='$user->username' and password ='$user->password'";
+            $query = "select * from user where username='$user->username'";
             $result = $this->db->select($query);
 
             if ($result === false) {
@@ -29,23 +29,38 @@ class Authcontroller
                     $this->db->closeConnection();
                     return false;
                 } else {
+                    ////////////////
+                    if ($result[0]["blocked"] == 0) {
+                        $stored_password = $result[0]["password"];
+                        $user_password = $user->password;
+                        if (password_verify($user_password, $stored_password)) {
+                            // Password is correct
+                            $myUser = new User();
+                            if (session_status() === PHP_SESSION_NONE) {
+                                session_start();
+                            }
+                            $_SESSION["id"] = $result[0]["id"];
+                            $_SESSION["userName"] = $result[0]["username"];
+                            $_SESSION["roleId"] = $result[0]["role_id"];
+                            $_SESSION["fullName"] = $result[0]["fullname"];
 
-                    $myUser = new User();
-                    if (session_status() === PHP_SESSION_NONE) {
-                        session_start();
+                            $myUser->roleid = $_SESSION["role_id"];
+                            $this->db->closeConnection();
+                            return true;
+                        } else {
+                            // Password is incorrect
+                            $_SESSION["errMsg"] = "You have entered wrong email or password";
+                            $this->db->closeConnection();
+                            return false;
+                        }
+                    } else {
+                        $_SESSION["errMsg"] = "You are blocked";
+                        $this->db->closeConnection();
+                        return false;
                     }
-                    $_SESSION["id"] = $result[0]["id"];
-                    $_SESSION["userName"] = $result[0]["username"];
-                    $_SESSION["roleId"] = $result[0]["role_id"];
-                    $_SESSION["fullName"] = $result[0]["fullname"];
+                    ////////////////
 
 
-
-
-                    $myUser->roleid = $_SESSION["role_id"];
-                    $this->db->closeConnection();
-
-                    return true;
                 }
             }
         } else {
@@ -54,12 +69,13 @@ class Authcontroller
         }
     }
 
-    
+
     public function register(User $user)
     {
         $this->db = new DBController;
         if ($this->db->openConnection()) {
-            $query = "insert into user values ('','$user->fullname','$user->username','$user->email','$user->password','$user->phone','$user->address','','$user->roleid')";
+            $hash_pass = password_hash($user->password, PASSWORD_DEFAULT);
+            $query = "insert into user values ('','$user->fullname','$user->username','$user->email','$hash_pass','$user->phone','$user->address','','$user->roleid')";
             $result = $this->db->insert($query);
             if ($result != false) {
                 if (session_status() === PHP_SESSION_NONE) {
@@ -73,7 +89,7 @@ class Authcontroller
                 // $_SESSION["userRole"] = "Client";
 
                 $cart = new CartController();
-                $cart->createCart($result);// create cart for the new user with id $result
+                $cart->createCart($result); // create cart for the new user with id $result
 
                 // $order = new OrderController();
                 // $order->createOrder($result);// create order for the new user with id $result

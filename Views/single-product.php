@@ -15,12 +15,7 @@ $currentUser = $auth->getCurrentUser();
 
 if (isset($_GET['id'])) {
 	if (!empty($_GET['id'])) {
-
 		$id = $_GET['id'];
-
-
-
-
 		if ($productController->getProductById($id)) {
 			$product = $productController->getProductById($id)[0];
 			// print_r($product);
@@ -29,12 +24,11 @@ if (isset($_GET['id'])) {
 					$cart = new CartController();
 					$currentUser = $auth->getCurrentUser();
 					$quantity = $_GET['quantity'];
-
 					try {
 						$cart->addToCart($currentUser, $product["id"], $quantity);
-						echo "<div class=\"alert alert-success\" role=\"alert\">added successfully</div>";
+						echo "<div class=\"alert alert-success\" role=\"alert\">added successfully to the <a href=\"cart.php\" >Cart</a></div>";
 					} catch (Exception $e) {
-						echo "<div class=\"alert alert-success\" role=\"alert\">added successfully</div>";
+						echo "<div class=\"alert alert-success\" role=\"alert\">already exists in the <a href=\"cart.php\" >Cart</a></div>";
 						// echo 'Message: ' . $e->getMessage();
 					}
 				} else {
@@ -57,6 +51,8 @@ if (isset($_GET['id'])) {
 	$_SESSION["errMsg"] =  "no product by this id";
 	header("location: ../views/index.php");
 }
+
+
 
 $feedback = new Feedback;
 
@@ -82,31 +78,7 @@ $getFeedback = $productController->getFeedback($product["id"]);
 <?php
 require_once 'layout/header.php';
 ?>
-<!-- ================ start banner area ================= -->
-<!-- <section class="blog-banner-area" id="blog">
-	<div class="container h-100">
-		<div class="blog-banner">
-			<div class="text-center"> -->
-<?php //if (isset($errMsg)) { 
-?>
-<!-- <h1><?php //echo $errMsg; 
-			?></h1> -->
-<?php //} else {  
-?>
-<!-- <h1><?php echo $product["name"]; ?></h1> -->
-<?php //}  
-?>
-<!-- <nav aria-label="breadcrumb" class="banner-breadcrumb">
-					<ol class="breadcrumb">
-						<li class="breadcrumb-item"><a href="#">Home</a></li>
-						<li class="breadcrumb-item active" aria-current="page">Shop Single</li>
-					</ol>
-				</nav>
-			</div>
-		</div>
-	</div>
-</section> -->
-<!-- ================ end banner area ================= -->
+
 
 
 <!--================Single Product Area =================-->

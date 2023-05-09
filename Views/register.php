@@ -7,16 +7,22 @@ require_once '../Controller/DBController.php';
 // // // // // // // // // // // // // if (session_status() === PHP_SESSION_NONE) {
 // // // // // // // 	session_start();
 // // // // // // //   }
-if (!isset($_SESSION["id"])) {
-	session_start();
-}
-$errMsg = "";
-// $_SESSION["submitbutton"] = "";
 
+$errMsg = "";
 $user = new User();
 $auth = new AuthController;
-
 $roles = $auth->getRoles();
+
+
+if (!isset($_SESSION["errMsg"])) {
+	if (session_status() === PHP_SESSION_NONE) {
+		session_start();
+	}
+	if (isset($_SESSION["errMsg"])) {
+		echo "<div class=\"alert alert-danger\" role=\"alert\">" . $_SESSION["errMsg"] . "</div>";
+		unset($_SESSION['errMsg']);
+	}
+}
 
 
 if (isset($_POST['fullname']) && isset($_POST['email']) && isset($_POST['password']) && isset($_POST['username']) && isset($_POST['phone']) && isset($_POST['address'])) {
