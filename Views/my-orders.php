@@ -10,9 +10,13 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 
+
 //// check if user is login ////
 $auth = new AuthController;
 if ($auth->getCurrentUser() != false) {
+  $userId=$auth->getCurrentUser()->id;
+  $order=new OrderController;
+  $bills=$order->getAllBills($userId);
 } else {
   if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -23,19 +27,23 @@ if ($auth->getCurrentUser() != false) {
 ////////////////////////////////
 
 ///////////////
-if (isset($_GET['orderid'])) {
-  if (!empty($_GET['orderid'])) {
-    $orderId = $_GET['orderid'];
-    $order=new OrderController;
-    $orderItems=$order->getOrderItems($orderId);
-    $orderSubtotal=$order->getOrderProductsSubtotal($orderId)[0]['subtotal'];
-    $bill=$order->getBill($orderId)[0];
-  }else{
-    header("location: ../Views/cart.php");
-  }
-}else{
-  header("location: ../Views/cart.php");
-}
+// if (isset($_GET['orderid'])) {
+//   if (!empty($_GET['orderid'])) {
+//     $orderId = $_GET['orderid'];
+//     $order=new OrderController;
+//     $orderItems=$order->getOrderItems($orderId);
+//     $orderSubtotal=$order->getOrderProductsSubtotal($orderId)[0]['subtotal'];
+//     $bill=$order->getBill($orderId)[0];
+//   }else{
+//     header("location: ../Views/cart.php");
+//   }
+// }else{
+//   header("location: ../Views/cart.php");
+// }
+
+
+
+
 ///////////////
 ?>
 
@@ -50,13 +58,10 @@ require_once 'layout/header.php';
   <div class="container h-100">
     <div class="blog-banner">
       <div class="text-center">
-        <h1>Order Confirmation</h1>
+        <h1>My Orders</h1>
         <nav aria-label="breadcrumb" class="banner-breadcrumb">
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="#">Home</a></li>
-            <?php
-            // print_r($bill=$order->getBill($orderId));
-            ?>
             <li class="breadcrumb-item active" aria-current="page">Shop Category</li>
           </ol>
         </nav>
@@ -69,16 +74,23 @@ require_once 'layout/header.php';
 <!--================Order Details Area =================-->
 <section class="order_details section-margin--small">
   <div class="container">
-    <p class="text-center billing-alert">Thank you. Your order has been received.</p>
+    <!-- <p class="text-center billing-alert">Thank you. Your order has been received.</p> -->
     <div class="row mb-5">
-      
-      <div class="col-md-6 col-xl-4 mb-4 mb-xl-0">
-        <div class="confirmation-card p-3">
-          <h3 class="billing-title">Order Info</h3>
+      <?php 
+      foreach ($bills as $bill){
+      ?>
+      <div class="col-md-6 col-xl-4 mb-4 mb-xl-0 ">
+        <div class="confirmation-card p-3 mb-3">
+          <h3 class="billing-title">
+          <a href="confirmation.php?orderid=<?php echo $bill["order_id"]; ?>" class="stretched-link">
+            Order Info
+            </a>
+          </h3>
           <table class="order-rable">
+
             <tr>
               <td>Order number</td>
-              <td>: <?php echo $orderId?></td>
+              <td>: <?php echo $bill["order_id"];?></td>
             </tr>
             <tr>
               <td>Date</td>
@@ -88,16 +100,13 @@ require_once 'layout/header.php';
               <td>Order Status</td>
               <td>: <?php echo $bill["status"]?></td>
             </tr>
-            <tr>
-              <td>Total</td>
-              <td>: $<?php echo $orderSubtotal?></td>
-            </tr>
 
           </table>
         </div>
       </div>
+      <?php }?>
 
-      <div class="col-md-6 col-xl-4 mb-4 mb-xl-0">
+      <!-- <div class="col-md-6 col-xl-4 mb-4 mb-xl-0">
         <div class="confirmation-card p-3">
           <h3 class="billing-title">Billing Address</h3>
           <table class="order-rable">
@@ -123,9 +132,9 @@ require_once 'layout/header.php';
             </tr>
           </table>
         </div>
-      </div>
+      </div> -->
 
-      <div class="col-md-6 col-xl-4 mb-4 mb-xl-0">
+      <!-- <div class="col-md-6 col-xl-4 mb-4 mb-xl-0">
         <div class="confirmation-card p-2 mb-2">
           <h3 class="billing-title">Payment Details</h3>
           <table class="order-rable">
@@ -152,9 +161,9 @@ require_once 'layout/header.php';
             </tr>
           </table>
         </div>
-      </div>
+      </div> -->
     </div>
-    <div class="order_details_table">
+    <!-- <div class="order_details_table">
       <h2>Order Details</h2>
       <div class="table-responsive">
         <table class="table">
@@ -180,7 +189,7 @@ require_once 'layout/header.php';
                 <p>$ <?php echo $item['total_price'] ?></p>
               </td>
             </tr>
-<?php }?>
+            <?php }?>
             <tr>
               <td>
                 <h4>Subtotal</h4>
@@ -216,8 +225,8 @@ require_once 'layout/header.php';
             </tr>
           </tbody>
         </table>
-      </div>
-    </div>
+      </div> 
+    </div>-->
   </div>
 </section>
 <!--================End Order Details Area =================-->

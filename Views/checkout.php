@@ -59,7 +59,7 @@ if (isset($_POST['flat']) && isset($_POST['building']) &&isset($_POST['street'])
     // $billing->set_orderId($orderId);
     // $billing->set_buyerId($buyerId);
     if ($order->addBilling($billing)) {
-      //  header("location: ../views/login.php");
+         header("location: ../Views/confirmation.php?orderid=".$orderId."");
     } else {
       $errMsg = $_SESSION["errMsg"] =  "error in adding bill";
     }
@@ -145,7 +145,7 @@ require_once 'layout/header.php';
       <div class="row">
         <div class="col-lg-8">
           <h3>Billing Details</h3>
-          <form class="row contact_form" action="confirmation.php?orderid=<?php echo $orderId; ?>" method="post">
+          <form class="row contact_form" action="checkout.php?orderid=<?php echo $orderId; ?>" method="post">
 
             <div class="col-md-2 form-group p_star">
               <label class="form-label">Flat No.</label>

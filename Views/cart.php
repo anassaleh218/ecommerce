@@ -269,7 +269,7 @@ require_once 'layout/header.php';
                             </td>
                             <td>
                                 <div class="checkout_btn_inner d-flex align-items-center">
-                                    <a class="gray_btn" href="index.php">Continue Shopping</a>
+                                    <a class="gray_btn" href="./products.php">Continue Shopping</a>
                                     <!-- <a class="primary-btn ml-2" href="./checkout.php?orderid=<?php //echo $orderId;?>&add">Proceed to checkout</a> -->
                                     <a class="primary-btn ml-2" href="cart.php?add">Proceed to checkout</a>
                                 </div>

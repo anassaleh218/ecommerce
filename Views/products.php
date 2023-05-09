@@ -27,8 +27,8 @@ if (isset($_GET['pfid'])) {
             $productController->addToFav($currentUser, $product["id"]);
             echo "<div class=\"alert alert-success\" role=\"alert\">added successfully</div>";
           } catch (Exception $e) {
-            // echo "<div class=\"alert alert-success\" role=\"alert\">added successfully</div>";
-            echo 'Message: ' . $e->getMessage();
+            echo "<div class=\"alert alert-success\" role=\"alert\">added successfully</div>";
+            // echo 'Message: ' . $e->getMessage();
           }
         } else {
           if (session_status() === PHP_SESSION_NONE) {

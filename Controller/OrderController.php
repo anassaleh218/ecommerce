@@ -116,8 +116,9 @@ class OrderController
     {
         $this->db = new DBController;
         if ($this->db->openConnection()) {
-            // $product->sellerid=
-            $query = "insert into order_billing values ('','" . $billing->get_flatNo() . "','" . $billing->get_buildingNo() . "','" . $billing->get_street() . "','" . $billing->get_city() . "','" . $billing->get_country() . "','" . $billing->get_phone() . "','".$billing->get_email()."','".$billing->get_creditCardHolderName()."','".$billing->get_creditCardType()."','".$billing->get_creditCardNum()."','".$billing->get_expMonth()."','".$billing->get_expYear()."','".$billing->get_cvv()."','".$billing->get_orderId()."','".$billing->get_buyerId()."')";
+            
+            // $date = date("Y-m-d H:i:s"); 
+            $query = "insert into order_billing values ('','" . $billing->get_flatNo() . "','" . $billing->get_buildingNo() . "','" . $billing->get_street() . "','" . $billing->get_city() . "','" . $billing->get_country() . "','" . $billing->get_phone() . "','".$billing->get_email()."','".$billing->get_creditCardHolderName()."','".$billing->get_creditCardType()."','".$billing->get_creditCardNum()."','".$billing->get_expMonth()."','".$billing->get_expYear()."','".$billing->get_cvv()."','".$billing->get_orderId()."','".$billing->get_buyerId()."',current_timestamp())";
             return $this->db->insert($query);
         } else {
             echo "Error in Database Connection";
@@ -129,11 +130,29 @@ class OrderController
     {
         $this->db = new DBController;
         if ($this->db->openConnection()) {
-            $query = "SELECT order_billing.*,DATE(createdAt) as date
+            $query = "SELECT order_billing.*,DATE(createdAt) as date,`order`.order_status as status
             FROM order_billing 
             INNER JOIN `order` ON order_billing.order_id = `order`.id 
             INNER JOIN user ON order_billing.buyer_id = user.id 
-            WHERE `order`.id = '$orderId'
+            WHERE order_billing.order_id = '$orderId'
+            ";
+            return $this->db->select($query);
+        } else {
+            echo "Error in Database Connection";
+            return false;
+        }
+    }
+
+
+    public function getAllBills($userId)
+    {
+        $this->db = new DBController;
+        if ($this->db->openConnection()) {
+            $query = "SELECT order_billing.*,DATE(createdAt) as date,`order`.order_status as status
+            FROM order_billing 
+            INNER JOIN `order` ON order_billing.order_id = `order`.id 
+            INNER JOIN user ON order_billing.buyer_id = user.id 
+            WHERE order_billing.buyer_id = '$userId'
             ORDER BY createdAt DESC";
             return $this->db->select($query);
         } else {
