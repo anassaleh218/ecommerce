@@ -30,8 +30,8 @@ if ($auth->getCurrentUser() != false) {
   header("location: ../Views/login.php");
 }
 
-if (isset($_GET['pid'])) {
-  if (!empty($_GET['pid'])) {
+if (isset($_GET['pfid'])) {
+  if (!empty($_GET['pfid'])) {
       if ($productController->removeFav($_GET['pid'])) {
           $deleteMsg = "Product Deleted Successfully";
           $productController->getFav($currentUser);
@@ -211,9 +211,9 @@ require_once 'layout/header.php';
                   <div class="card-product__img">
                     <img class="card-img" src="<?php echo $product['image'] ?>" alt="<?php echo $product['name'] ?>">
                     <ul class="card-product__imgOverlay">
-                      <li><button><i class="ti-search"></i></button></li>
+                    <li><a href="watchlist.php?pwid=<?php echo $product["id"]; ?>"><button><i class="fa-solid fa-bookmark-slash"></i></button></a></li>
                       <li><button><i class="ti-shopping-cart"></i></button></li>
-                      <li><a href="fav-products.php?pid=<?php echo $product["id"]; ?>"><button><i class="ti-heart-broken"></i></button></a></li>
+                      <li><a href="fav-products.php?pfid=<?php echo $product["id"]; ?>"><button><i class="ti-heart-broken"></i></button></a></li>
                     </ul>
                   </div>
                   <div class="card-body">

@@ -1,101 +1,48 @@
 <?php
+// if (!isset($_SESSION["errMsg"])) {
+// 	session_start();
+// 	if (isset($_SESSION["errMsg"])) {
+// 		echo "<div class=\"alert alert-danger\" role=\"alert\">" . $_SESSION["errMsg"] . "</div>";
+//     unset($_SESSION['errMsg']);
+
+// 	}
+// 	// session_destroy();
+// }
+?>
+
+<!--  -->
+<?php
 require_once '../Models/product.php';
 require_once '../Controller/Authcontroller.php';
 require_once '../Controller/ProductController.php';
 
+$auth = new AuthController;
 $productController = new ProductController;
-$categories = $productController->getCategories();
-$products = $productController->getAllProducts();
-
-if (isset($_GET['pfid'])) {
-  if (!empty($_GET['pfid'])) {
 
 
-    $id = $_GET['pfid'];
-    // $productController = new ProductController;
-    $auth = new AuthController;
-
-
-    if ($productController->getProductById($id)) {
-      $product = $productController->getProductById($id)[0];
-      // print_r($product);
-      if (isset($_GET['addtofav'])) {
-        if ($auth->getCurrentUser() != false) {
-
-          $currentUser = $auth->getCurrentUser();
-          try {
-            $productController->addToFav($currentUser, $product["id"]);
-            echo "<div class=\"alert alert-success\" role=\"alert\">added successfully</div>";
-          } catch (Exception $e) {
-            // echo "<div class=\"alert alert-success\" role=\"alert\">added successfully</div>";
-            echo 'Message: ' . $e->getMessage();
-          }
-        } else {
-          if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-          }
-          $_SESSION["errMsg"] =  "you must login or regester first";
-          header("location: ../Views/login.php");
-        }
-      }
-    } else {
-      $_SESSION["errMsg"] =  "no product by this id";
-      header("location: ../Views/index.php");
-    }
-  } else {
-    // $_SESSION["errMsg"] =  "no product by this id";
-    // header("location: ../Views/index.php");
-  }
+if ($auth->getCurrentUser() != false) {
+  $currentUser = $auth->getCurrentUser();
 } else {
-  // $_SESSION["errMsg"] =  "no product by this id";
-  // header("location: ../Views/index.php");
+  if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+  }
+  $_SESSION["errMsg"] =  "you must login or regester first";
+  header("location: ../Views/login.php");
 }
-
 
 if (isset($_GET['pwid'])) {
   if (!empty($_GET['pwid'])) {
-
-
-    $id = $_GET['pwid'];
-    // $productController = new ProductController;
-    $auth = new AuthController;
-
-
-    if ($productController->getProductById($id)) {
-      $product = $productController->getProductById($id)[0];
-      // print_r($product);
-      if (isset($_GET['addtowatchlist'])) {
-        if ($auth->getCurrentUser() != false) {
-
-          $currentUser = $auth->getCurrentUser();
-          try {
-            $productController->addToWatchlist($currentUser, $product["id"]);
-            echo "<div class=\"alert alert-success\" role=\"alert\">added successfully</div>";
-          } catch (Exception $e) {
-            // echo "<div class=\"alert alert-success\" role=\"alert\">added successfully</div>";
-            echo 'Message: ' . $e->getMessage();
-          }
-        } else {
-          if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-          }
-          $_SESSION["errMsg"] =  "you must login or regester first";
-          header("location: ../Views/login.php");
-        }
-      }
-    } else {
-      $_SESSION["errMsg"] =  "no product by this id";
-      header("location: ../Views/index.php");
+    if ($productController->removeWatchlist($_GET['pwid'])) {
+      $deleteMsg = "Product Deleted Successfully";
+      $productController->getWatchlist($currentUser);
     }
-  } else {
-    // $_SESSION["errMsg"] =  "no product by this id";
-    // header("location: ../Views/index.php");
   }
-} else {
-  // $_SESSION["errMsg"] =  "no product by this id";
-  // header("location: ../Views/index.php");
 }
 
+
+
+
+$products = $productController->getWatchlist($currentUser);
 
 
 // function handleClick()
@@ -126,9 +73,12 @@ onclick="window.location.href='category-products.php?id=<?php echo $category['id
 ?>
 
 
+
+
 <?php
 require_once 'layout/header.php';
 ?>
+
 <!-- ================ start banner area ================= -->
 <section class="blog-banner-area" id="category">
   <div class="container h-100">
@@ -152,7 +102,7 @@ require_once 'layout/header.php';
 <section class="section-margin--small mb-5">
   <div class="container">
     <div class="row">
-      <div class="col-xl-3 col-lg-4 col-md-5">
+      <!-- <div class="col-xl-3 col-lg-4 col-md-5">
         <div class="sidebar-categories">
           <div class="head">Browse Categories</div>
           <ul class="main-categories">
@@ -180,7 +130,7 @@ require_once 'layout/header.php';
             </li>
           </ul>
         </div>
-        <!-- <div class="sidebar-filter">
+        <div class="sidebar-filter">
           <div class="top-filter-head">Product Filters</div>
           <div class="common-filter">
             <div class="head">Brands</div>
@@ -222,9 +172,9 @@ require_once 'layout/header.php';
               </div>
             </div>
           </div>
-        </div> -->
-      </div>
-      <div class="col-xl-9 col-lg-8 col-md-7">
+        </div>
+      </div> -->
+      <div class="col-xl-12 col-lg-8 col-md-7">
         <!-- Start Filter Bar -->
         <div class="filter-bar d-flex flex-wrap align-items-center">
           <!-- <div class="sorting">
@@ -257,28 +207,20 @@ require_once 'layout/header.php';
             <?php
             foreach ($products as $product) {
             ?>
-              <div class="col-md-6 col-lg-4" >
+              <div class="col-md-6 col-lg-4">
                 <div class="card text-center card-product">
                   <div class="card-product__img">
-                    <img class="card-img" width="500"  src="<?php echo $product['image'] ?>" alt="<?php echo $product['name'] ?>">
+                    <img class="card-img" src="<?php echo $product['image'] ?>" alt="<?php echo $product['name'] ?>">
                     <ul class="card-product__imgOverlay">
-                      <!-- <li><button><i class="ti-search"></i></button></li> -->
-                      <li>
-                        <form action="single-product.php">
-                          <input type="hidden" name="quantity" value="1">
-                          <input type="hidden" name="id" value="<?php echo $product["id"]; ?>" >
-                          <input type="hidden" name="add" value="" >
-                          <button><i class="ti-shopping-cart"></i></button>
-                        </form>
-                      </li>
-                      <li><a href="products.php?pwid=<?php echo $product["id"]; ?>&addtowatchlist"><button><i class="fa-solid fa-bookmark"></i></button></a></li>
-                      <li><button><a href="products.php?pfid=<?php echo $product["id"]; ?>&addtofav"><i class="ti-heart"></i></a></button></li>
+                      <li><a href="watchlist.php?pwid=<?php echo $product["id"]; ?>"><button><i class="fa-regular fa-bookmark"></i></button></a></li>
+                      <li><button><i class="ti-shopping-cart"></i></button></li>
+                      <li><a href="fav-products.php?pfid=<?php echo $product["id"]; ?>"><button><i class="ti-heart-broken"></i></button></a></li>
                     </ul>
                   </div>
                   <div class="card-body">
                     <p><?php echo $product['category'] ?></p>
-                    <h4 class="card-product__title"><a class="stretched-link" href="single-product.php?id=<?php echo $product['id'] ?>"><?php echo $product['name'] ?></a></h4>
-                    <p class="card-product__price">$<?php echo $product['price'] ?></p>
+                    <h4 class="card-product__title"><a href="single-product.php?id=<?php echo $product['id'] ?>"><?php echo $product['name'] ?></a></h4>
+                    <p class="card-product__price">$<?php echo $product['start_price'] ?></p>
                   </div>
                 </div>
               </div>

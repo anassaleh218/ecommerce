@@ -20,16 +20,14 @@
             <div class="single-footer-widget tp_widgets">
               <h4 class="footer_title">Quick Links</h4>
               <ul class="list">
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Shop</a></li>
-                <li><a href="#">Blog</a></li>
-                <li><a href="#">Product</a></li>
-                <li><a href="#">Brand</a></li>
-                <li><a href="#">Contact</a></li>
+                <li><a href="../index.php">Home</a></li>
+                <li><a href="../products.php">Shop</a></li>
+                <li><a href="../fav-products.php">Favourites</a></li>
+                <li><a href="../watchlist.php">Watch List</a></li>
               </ul>
             </div>
           </div>
-          <div class="col-lg-2 col-md-6 col-sm-6">
+          <!-- <div class="col-lg-2 col-md-6 col-sm-6">
             <div class="single-footer-widget instafeed">
               <h4 class="footer_title">Gallery</h4>
               <ul class="list instafeed d-flex flex-wrap">
@@ -41,7 +39,7 @@
                 <li><img src="img/gallery/r8.jpg" alt=""></li>
               </ul>
             </div>
-          </div>
+          </div> -->
           <div class="offset-lg-1 col-lg-3 col-md-6 col-sm-6">
             <div class="single-footer-widget tp_widgets">
               <h4 class="footer_title">Contact Us</h4>
