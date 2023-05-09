@@ -97,7 +97,15 @@ if ($auth->getCurrentUser() != false) {
         <?php if (isset($userRole)) {
           if ($userRole == "buyer") { ?>
             <li class="nav-item"><a class="nav-link" href="products.php">Shop Category</a></li>
-            <li class="nav-item"><a class="nav-link" href="fav-products.php">Favourites Products</a></li>
+
+            <li class="nav-item submenu dropdown">
+              <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">preferences</a>
+              <ul class="dropdown-menu">
+                <li class="nav-item"><a class="nav-link" href="fav-products.php">Favourites</a></li>
+                <li class="nav-item"><a class="nav-link" href="watchlist.php">Watch List</a></li>
+              </ul>
+            </li>
+
             <!-- <li class="nav-item"><a class="nav-link" href="cart.php">Shopping Cart</a></li> -->
             <!-- <li class="nav-item"><a class="nav-link" href="single-product.php">Product Details</a></li> -->
             <li class="nav-item"><a class="nav-link" href="checkout.php">Product Checkout</a></li>
@@ -120,7 +128,7 @@ if ($auth->getCurrentUser() != false) {
 
 
         <?php if (!isset($userRole)) { ?>
-        </ul>
+          </ul>
           <ul class="nav navbar-nav menu_nav ml-auto mr-auto">
             <li class="nav-item"><a class="button button-header" href="login.php">Login</a></li>
             <li class="nav-item"><a class="button button-header" href="register.php">Register</a></li>
@@ -133,11 +141,11 @@ if ($auth->getCurrentUser() != false) {
         <?php if (isset($userRole)) { ?>
           </ul>
           <ul class="nav navbar-nav menu_nav ml-auto mr-auto">
-          <li class="nav-item mt-2 mr-2"><?php
-                $buyer = new Authcontroller;
-                $buyerName = $buyer->getCurrentUser()->fullname;
-                echo "Hello, " . $buyerName
-                ?> </li>
+            <li class="nav-item mt-2 mr-2"><?php
+                                            $buyer = new Authcontroller;
+                                            $buyerName = $buyer->getCurrentUser()->fullname;
+                                            echo "Hello, " . $buyerName
+                                            ?> </li>
             <li class="nav-item"><a class="button button-header" href="index.php?logout">logout</a></li>
           </ul>
         <?php } ?>
