@@ -2,17 +2,23 @@
 require_once '../Controller/ProductController.php';
 require_once '../Controller/CartController.php';
 require_once '../Controller/Authcontroller.php';
+require_once '../Models/feedback.php';
 
 if (session_status() === PHP_SESSION_NONE) {
 	session_start();
 }
 
+$productController = new ProductController;
+$auth = new AuthController;
+$currentUser = $auth->getCurrentUser();
+
+
 if (isset($_GET['id'])) {
 	if (!empty($_GET['id'])) {
 
 		$id = $_GET['id'];
-		$productController = new ProductController;
-		$auth = new AuthController;
+
+
 
 
 		if ($productController->getProductById($id)) {
@@ -51,6 +57,21 @@ if (isset($_GET['id'])) {
 	$_SESSION["errMsg"] =  "no product by this id";
 	header("location: ../views/index.php");
 }
+
+$feedback = new Feedback;
+
+if (isset($_POST['rate']) && isset($_POST['feedback'])) {
+	if (!empty($_POST['feedback']) && !empty($_POST['rate'])) {
+		$feedback->adding($currentUser->fullname, $_POST['rate'], $_POST['feedback'], $currentUser->id, $product["id"]);
+		if ($productController->addFeedback($feedback)) {
+			header("location: ../Views/single-product.php?id=" . $product['id'] . "");
+		} else {
+			// $errMsg = $_SESSION["errMsg"] =  "error in adding bill";
+		}
+	}
+}
+
+$getFeedback = $productController->getFeedback($product["id"]);
 
 
 
@@ -110,19 +131,24 @@ require_once 'layout/header.php';
 					<h3><?php echo $product["name"]; ?></h3>
 					<h2>$<?php echo $product["start_price"]; ?></h2>
 					<ul class="list">
-						<li><a class="active" href="#"><span>Color</span> : <?php echo $product["color"]; ?></a></li>
-						<li><a href="#"><span>Availibility</span> : <?php echo $product["status"]; ?></a></li>
-						<li><a href="#"><span>category</span> : <?php echo $product["status"]; ?></a></li>
+						<li><span>category</span> : <?php echo $product["category"]; ?></li>
+						<li><span>Color</span> : <?php echo $product["color"]; ?></li>
+
+						<?php if($product["size"]!= null){?>
+							<li><span>Size</span> : <?php echo $product["size"]; ?></li>
+						<?php }?>
+
+						<li><span>Availibility</span> : <?php echo $product["status"]; ?></li>
 					</ul>
 
 					<p>description: <?php echo $product["description"]; ?></p>
 					<div>
 						<label for="qty">Quantity:</label>
 						<form action="single-product.php">
-							<input type="text" name="quantity" size="2" maxlength="12" value="1" title="Quantity:" class="input-text qty">
-							<input type="hidden" name="id" value="<?php echo $product["id"]; ?>" >
-							<input type="hidden" name="add" value="" >
-							<button class="button primary-btn" >Add to Cart</button>
+							<input type="number" name="quantity" size="2" maxlength="12" value="1" title="Quantity:" class="input-text qty">
+							<input type="hidden" name="id" value="<?php echo $product["id"]; ?>">
+							<input type="hidden" name="add" value="">
+							<button class="button primary-btn d-block mt-5">Add to Cart</button>
 						</form>
 					</div>
 				</div>
@@ -332,67 +358,49 @@ require_once 'layout/header.php';
 								</div>
 							</div>
 						</div> -->
-						<div class="review_list">
-							<div class="review_item">
-								<div class="media">
-									<div class="d-flex">
+
+						<?php
+						foreach ($getFeedback as $fb) {
+						?>
+							<div class="review_list">
+								<div class="review_item">
+									<div class="media">
+										<!-- <div class="d-flex">
 										<img src="asstes/img/product/review-1.png" alt="">
+									</div> -->
+										<div class="media-body">
+											<h4><?php echo $fb["fullname"]; ?></h4>
+											<?php
+
+											for ($i = 0; $i < $fb["rate"]; $i++) {
+											?>
+												<i class="fa fa-star"></i>
+											<?php
+											}
+
+											for ($i = $fb["rate"]; $i < 5; $i++) {
+											?>
+												<i class="fa-regular fa-star"></i>
+											<?php
+
+											}
+
+											?>
+										</div>
 									</div>
-									<div class="media-body">
-										<h4>Blake Ruiz</h4>
-										<i class="fa fa-star"></i>
-										<i class="fa fa-star"></i>
-										<i class="fa fa-star"></i>
-										<i class="fa fa-star"></i>
-										<i class="fa fa-star"></i>
-									</div>
+									<p><?php echo $fb["feedback"]; ?></p>
+									<hr>
 								</div>
-								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-									dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-									commodo</p>
+
 							</div>
-							<div class="review_item">
-								<div class="media">
-									<div class="d-flex">
-										<img src="asstes/img/product/review-2.png" alt="">
-									</div>
-									<div class="media-body">
-										<h4>Blake Ruiz</h4>
-										<i class="fa fa-star"></i>
-										<i class="fa fa-star"></i>
-										<i class="fa fa-star"></i>
-										<i class="fa fa-star"></i>
-										<i class="fa fa-star"></i>
-									</div>
-								</div>
-								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-									dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-									commodo</p>
-							</div>
-							<div class="review_item">
-								<div class="media">
-									<div class="d-flex">
-										<img src="asstes/img/product/review-3.png" alt="">
-									</div>
-									<div class="media-body">
-										<h4>Blake Ruiz</h4>
-										<i class="fa fa-star"></i>
-										<i class="fa fa-star"></i>
-										<i class="fa fa-star"></i>
-										<i class="fa fa-star"></i>
-										<i class="fa fa-star"></i>
-									</div>
-								</div>
-								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-									dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-									commodo</p>
-							</div>
-						</div>
+						<?php
+						}
+						?>
 					</div>
 					<div class="col-lg-6">
 						<div class="review_box">
 							<h4>Add a Review</h4>
-							<p>Your Rating:</p>
+							<!-- <p>Your Rating:</p>
 							<ul class="list">
 								<li><a href="#"><i class="fa fa-star"></i></a></li>
 								<li><a href="#"><i class="fa fa-star"></i></a></li>
@@ -400,19 +408,16 @@ require_once 'layout/header.php';
 								<li><a href="#"><i class="fa fa-star"></i></a></li>
 								<li><a href="#"><i class="fa fa-star"></i></a></li>
 							</ul>
-							<p>Outstanding</p>
-							<form action="#/" class="form-contact form-review mt-3">
+							<p>Outstanding</p> -->
+							<form action="single-product.php?id=<?php echo $product['id'] ?>" method="post" class="form-contact form-review mt-3">
+
 								<div class="form-group">
-									<input class="form-control" name="name" type="text" placeholder="Enter your name" required>
+									<label> Enter Rate Out Of 5 :</label>
+									<input class="form-control mb-3" name="rate" type="number" placeholder="Enter Rate" min="0" max="5">
 								</div>
 								<div class="form-group">
-									<input class="form-control" name="email" type="email" placeholder="Enter email address" required>
-								</div>
-								<div class="form-group">
-									<input class="form-control" name="subject" type="text" placeholder="Enter Subject">
-								</div>
-								<div class="form-group">
-									<textarea class="form-control  w-100" name="textarea" id="textarea" cols="30" rows="5" placeholder="Enter Message"></textarea>
+									<label> Feedback :</label>
+									<textarea class="form-control  w-100" name="feedback" cols="30" rows="5" placeholder="Enter Message"></textarea>
 								</div>
 								<div class="form-group text-center text-md-right mt-3">
 									<button type="submit" class="button button--active button-review">Submit Now</button>

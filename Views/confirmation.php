@@ -29,6 +29,7 @@ if (isset($_GET['orderid'])) {
     $order=new OrderController;
     $orderItems=$order->getOrderItems($orderId);
     $orderSubtotal=$order->getOrderProductsSubtotal($orderId)[0]['subtotal'];
+    $bill=$order->getBill($orderId)[0];
   }else{
     header("location: ../Views/cart.php");
   }
@@ -67,8 +68,9 @@ require_once 'layout/header.php';
   <div class="container">
     <p class="text-center billing-alert">Thank you. Your order has been received.</p>
     <div class="row mb-5">
+      
       <div class="col-md-6 col-xl-4 mb-4 mb-xl-0">
-        <div class="confirmation-card">
+        <div class="confirmation-card p-3">
           <h3 class="billing-title">Order Info</h3>
           <table class="order-rable">
             <tr>
@@ -77,43 +79,73 @@ require_once 'layout/header.php';
             </tr>
             <tr>
               <td>Date</td>
-              <td>: Oct 03, 2017</td>
+              <td>: <?php echo $bill["date"] ;?></td>
             </tr>
             <tr>
               <td>Total</td>
               <td>: $<?php echo $orderSubtotal?></td>
             </tr>
-            <tr>
-              <td>Payment method</td>
-              <td>: Check payments</td>
-            </tr>
+
           </table>
         </div>
       </div>
+
       <div class="col-md-6 col-xl-4 mb-4 mb-xl-0">
-        <div class="confirmation-card">
+        <div class="confirmation-card p-3">
           <h3 class="billing-title">Billing Address</h3>
           <table class="order-rable">
+          <tr>
+              <td>Flat No</td>
+              <td>: <?php echo $bill["flatNo"] ;?></td>
+            </tr>
+            <tr>
+              <td>Building No</td>
+              <td>: <?php echo $bill["buildingNo"] ;?></td>
+            </tr>
             <tr>
               <td>Street</td>
-              <td>: 56/8 panthapath</td>
+              <td>: <?php echo $bill["street"] ;?></td>
             </tr>
             <tr>
               <td>City</td>
-              <td>: Dhaka</td>
+              <td>: <?php echo $bill["city"] ;?></td>
             </tr>
             <tr>
               <td>Country</td>
-              <td>: Bangladesh</td>
-            </tr>
-            <tr>
-              <td>Postcode</td>
-              <td>: 1205</td>
+              <td>: <?php echo $bill["country"] ;?></td>
             </tr>
           </table>
         </div>
       </div>
-     
+
+      <div class="col-md-6 col-xl-4 mb-4 mb-xl-0">
+        <div class="confirmation-card p-2 mb-2">
+          <h3 class="billing-title">Payment Details</h3>
+          <table class="order-rable">
+          <tr>
+              <td>Credit Card Type</td>
+              <td>: <?php echo $bill["credit_card_type"] ;?></td>
+            </tr>
+            <tr>
+              <td>Credit Card Holder Name</td>
+              <td>: <?php echo $bill["credit_card_holdername"] ;?></td>
+            </tr>
+          </table>
+        </div>
+        <div class="confirmation-card p-2">
+          <h3 class="billing-title">Contact Details</h3>
+          <table class="order-rable">
+          <tr>
+              <td>Phone Number</td>
+              <td>: <?php echo $bill["phone"];?></td>
+            </tr>
+            <tr>
+              <td>Email</td>
+              <td>: <?php echo $bill["email"];?></td>
+            </tr>
+          </table>
+        </div>
+      </div>
     </div>
     <div class="order_details_table">
       <h2>Order Details</h2>
@@ -172,7 +204,7 @@ require_once 'layout/header.php';
                 <h5></h5>
               </td>
               <td>
-                <h4>$2210.00</h4>
+                <h4>$ <?php echo $orderSubtotal+50 ?></h4>
               </td>
             </tr>
           </tbody>

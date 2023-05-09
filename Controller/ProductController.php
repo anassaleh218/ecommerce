@@ -42,13 +42,13 @@ class ProductController
             and category.id = $id
             order by product.id asc
             ";
-            // $query = "select product.id,product.name,start_price as price,quantity,product.image,SUM(product.quantity) AS categoryQuantity,category.name as 'category' 
-            // from product
-            // join category on product.category_id=category.id
-            // where product.category_id=category.id
-            // and category.id = $id
-            // order by product.id asc
-            // ";
+         // $query = "select product.id,product.name,start_price as price,quantity,product.image,SUM(product.quantity) AS categoryQuantity,category.name as 'category' 
+         // from product
+         // join category on product.category_id=category.id
+         // where product.category_id=category.id
+         // and category.id = $id
+         // order by product.id asc
+         // ";
          return $this->db->select($query);
       } else {
          echo "Error in Database Connection";
@@ -119,7 +119,10 @@ class ProductController
    {
       $this->db = new DBController;
       if ($this->db->openConnection()) {
-         $query = "select * FROM product WHERE product.id = '$id'";
+         $query = "select product.*,category.name as category,product_size.name as size FROM product
+         INNER Join category on product.category_id=category.id
+         Left Join product_size on product.size_id=product_size.id
+         WHERE product.id = '$id'";
          return $this->db->select($query);
       } else {
          echo "Error in Database Connection";
@@ -188,25 +191,25 @@ class ProductController
 
    public function addToFav(User $user, $product_id)
    {
-       $this->db = new DBController;
-       if ($this->db->openConnection()) {
-           $query = "insert INTO fav_products VALUES ('".$user->id."', '$product_id');";
-           $result = $this->db->insert($query);
-           if ($result != false) {
-               if (session_status() === PHP_SESSION_NONE) {
-                   session_start();
-               }
-               $this->db->closeConnection();
-               return true;
-           } else {
-               $_SESSION["errMsg"] = "Somthing went wrong... try again later";
-               $this->db->closeConnection();
-               return false;
-           }
-       } else {
-           echo "Error in Database Connection";
-           return false;
-       }
+      $this->db = new DBController;
+      if ($this->db->openConnection()) {
+         $query = "insert INTO fav_products VALUES ('" . $user->id . "', '$product_id');";
+         $result = $this->db->insert($query);
+         if ($result != false) {
+            if (session_status() === PHP_SESSION_NONE) {
+               session_start();
+            }
+            $this->db->closeConnection();
+            return true;
+         } else {
+            $_SESSION["errMsg"] = "Somthing went wrong... try again later";
+            $this->db->closeConnection();
+            return false;
+         }
+      } else {
+         echo "Error in Database Connection";
+         return false;
+      }
    }
 
    public function getFav(User $user)
@@ -217,7 +220,7 @@ class ProductController
          FROM product
          INNER JOIN fav_products ON product.id = fav_products.product_id 
          INNER JOIN category ON product.category_id = category.id
-         WHERE fav_products.buyer_id ='".$user->id."'";
+         WHERE fav_products.buyer_id ='" . $user->id . "'";
          return $this->db->select($query);
       } else {
          echo "Error in Database Connection";
@@ -239,4 +242,31 @@ class ProductController
    }
 
 
+   public function addFeedback(Feedback $feedback)
+   {
+      $this->db = new DBController;
+      if ($this->db->openConnection()) {
+         // $product->sellerid=
+         $query = "insert into product_feedback values ('','" . $feedback->get_rate() . "','" . $feedback->get_feedback() . "','" . $feedback->get_buyerId() . "','" . $feedback->get_productId() . "')";
+         return $this->db->insert($query);
+      } else {
+         echo "Error in Database Connection";
+         return false;
+      }
+   }
+
+   public function getFeedback($product_id)
+   {
+      $this->db = new DBController;
+      if ($this->db->openConnection()) {
+         // $product->sellerid=
+         $query = "select user.fullname,rate,feedback from product_feedback 
+           INNER Join user on product_feedback.buyer_id=user.id
+           INNER Join product on product_feedback.product_id=$product_id";
+         return $this->db->select($query);
+      } else {
+         echo "Error in Database Connection";
+         return false;
+      }
+   }
 }
