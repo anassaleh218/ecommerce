@@ -140,7 +140,7 @@ require_once 'layout/header.php';
 <section class="cart_area">
   <div class="container">
     <div class="col-6 mx-auto">
-      <h2 class="mb-2">Manage Category:</h2>
+      <h2 class="mb-5">Manage Category:</h2>
 
       <?php
 
@@ -155,7 +155,7 @@ require_once 'layout/header.php';
         <div class="form-group">
           <label for="exampleInputEmail1">Add Category</label>
           <input type="text" class="form-control" id="exampleInputEmail1" name="catName" aria-describedby="emailHelp" placeholder="Enter Category name">
-          <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+          <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
         </div>
         <button type="submit" class="btn btn-primary">Add</button>
       </form>
@@ -164,7 +164,7 @@ require_once 'layout/header.php';
         $categories = $productController->getCategories();
       ?>
         <div class="mt-5">
-          <h4 class="table m-0">All Categories</h4>
+          <h4 class="table mb-2">All Categories</h4>
           <table class="table ">
             <thead class="thead-dark">
               <tr>

@@ -28,10 +28,10 @@ if (isset($_GET['orderid'])) {
     $order = new OrderController;
     $orderItems = $order->getOrderItems($orderId);
     $orderSubtotal = $order->getOrderProductsSubtotal($orderId)[0]['subtotal'];
-  }else{
+  } else {
     header("location: ../Views/cart.php");
   }
-}else{
+} else {
   header("location: ../Views/cart.php");
 }
 /////////////
@@ -39,11 +39,11 @@ $buyer = new Authcontroller;
 $buyerId = $buyer->getCurrentUser()->id;
 $billing = new Billing;
 
-if (isset($_POST['flat']) && isset($_POST['building']) && isset($_POST['city']) && isset($_POST['country']) && isset($_POST['phone']) && isset($_POST['email']) && isset($_POST['ccName']) && isset($_POST['ccType']) && isset($_POST['ccNum']) && isset($_POST['expMonth']) && isset($_POST['expYear']) && isset($_POST['cvv'])) {
-  if (!empty($_POST['flat']) && !empty($_POST['building']) && !empty($_POST['city']) && !empty($_POST['country']) && !empty($_POST['phone']) && !empty($_POST['email']) && !empty($_POST['ccName']) && !empty($_POST['ccType']) && !empty($_POST['ccNum']) && !empty($_POST['expMonth']) && !empty($_POST['expYear']) && !empty($_POST['cvv'])) {
+if (isset($_POST['flat']) && isset($_POST['building']) &&isset($_POST['street']) && isset($_POST['city']) && isset($_POST['country']) && isset($_POST['phone']) && isset($_POST['email']) && isset($_POST['ccName']) && isset($_POST['ccType']) && isset($_POST['ccNum']) && isset($_POST['expMonth']) && isset($_POST['expYear']) && isset($_POST['cvv'])) {
+  if (!empty($_POST['flat']) && !empty($_POST['building']) && !empty($_POST['street']) && !empty($_POST['city']) && !empty($_POST['country']) && !empty($_POST['phone']) && !empty($_POST['email']) && !empty($_POST['ccName']) && !empty($_POST['ccType']) && !empty($_POST['ccNum']) && !empty($_POST['expMonth']) && !empty($_POST['expYear']) && !empty($_POST['cvv'])) {
     // print_r($order->addBilling($billing)); 
     // echo $orderId;
-    $billing->adding($_POST['flat'],$_POST['building'],$_POST['city'],$_POST['country'],$_POST['phone'],$_POST['email'],$_POST['ccName'],$_POST['ccType'],$_POST['ccNum'],$_POST['expMonth'],$_POST['expYear'],$_POST['cvv'],$orderId,$buyerId);
+    $billing->adding($_POST['flat'], $_POST['building'],$_POST['street'], $_POST['city'], $_POST['country'], $_POST['phone'], $_POST['email'], $_POST['ccName'], $_POST['ccType'], $_POST['ccNum'], $_POST['expMonth'], $_POST['expYear'], $_POST['cvv'], $orderId, $buyerId);
     // $billing->set_flatNo($_POST['flat']);
     // $billing->set_buildingNo($_POST['building']);
     // $billing->set_city($_POST['city']);
@@ -59,9 +59,9 @@ if (isset($_POST['flat']) && isset($_POST['building']) && isset($_POST['city']) 
     // $billing->set_orderId($orderId);
     // $billing->set_buyerId($buyerId);
     if ($order->addBilling($billing)) {
-      // header("location: ../views/login.php");
+      //  header("location: ../views/login.php");
     } else {
-      $errMsg =$_SESSION["errMsg"] =  "error in adding bill";
+      $errMsg = $_SESSION["errMsg"] =  "error in adding bill";
     }
   } else {
     $errMsg = $_SESSION["errMsg"];
@@ -84,14 +84,14 @@ require_once 'layout/header.php';
   <div class="container h-100">
     <div class="blog-banner">
       <div class="text-center">
-      <?php 
-      if ($errMsg != "") {
+        <?php
+        if ($errMsg != "") {
         ?>
           <div class="alert alert-danger" role="alert"><?php echo $errMsg ?></div>
         <?php
         }
-  
-      ?>
+
+        ?>
         <h1>Product Checkout</h1>
         <nav aria-label="breadcrumb" class="banner-breadcrumb">
           <ol class="breadcrumb">
@@ -145,15 +145,19 @@ require_once 'layout/header.php';
       <div class="row">
         <div class="col-lg-8">
           <h3>Billing Details</h3>
-          <form class="row contact_form" action="checkout.php?orderid=<?php echo $orderId; ?>" method="post">
+          <form class="row contact_form" action="confirmation.php?orderid=<?php echo $orderId; ?>" method="post">
 
-            <div class="col-md-6 form-group p_star">
+            <div class="col-md-2 form-group p_star">
               <label class="form-label">Flat No.</label>
-              <input type="text" class="form-control" name="flat" required>
+              <input type="number" class="form-control" name="flat" required>
             </div>
-            <div class="col-md-6 form-group p_star">
+            <div class="col-md-2 form-group p_star">
               <label class="form-label">Building No.</label>
-              <input type="text" class="form-control" name="building" required>
+              <input type="number" class="form-control" name="building" required>
+            </div>
+            <div class="col-md-8 form-group p_star">
+              <label class="form-label">Street</label>
+              <input type="text" class="form-control" name="street" required>
             </div>
             <div class="col-md-6 form-group p_star">
               <label class="form-label">City</label>
@@ -181,17 +185,14 @@ require_once 'layout/header.php';
             <div class="col-md-4 form-group p_star">
               <label class="form-label">Payment Method</label>
               <select class="country_select" name="ccType">
-                <option value="Visa">VISA</option>
+                <option value="Visa"><i class="fa-brands fa-cc-visa"></i>VISA</option>
                 <option value="MasterCard">Master Card</option>
                 <option value="Meeza">Meeza - Only In Egypt</option>
               </select>
             </div>
             <div class="col-md-8 form-group p_star">
               <label class="form-label">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-credit-card" viewBox="0 0 16 16">
-                  <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1H2zm13 4H1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7z" />
-                  <path d="M2 10a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1z" />
-                </svg> Credit Card Number</label>
+                <i class="ti-credit-card"></i> Credit Card Number</label>
               <input type="text" class="form-control" name="ccNum" required>
             </div>
             <!--  -->
@@ -263,7 +264,7 @@ require_once 'layout/header.php';
             <ul class="list list_2">
               <li><a href="#">Subtotal <span>$ <?php echo $orderSubtotal ?></span></a></li>
               <li><a href="#">Shipping <span>Flat rate: $50.00</span></a></li>
-              <li><a href="#">Total <span>$2210.00</span></a></li>
+              <li><a href="#">Total <span>$ <?php echo $orderSubtotal+50 ?></span></a></li>
             </ul>
             <!-- <div class="payment_item">
               <div class="radion_btn">

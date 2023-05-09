@@ -5,6 +5,7 @@ class Billing
   private $id;
   private $flatNo;
   private $buildingNo;
+  private $street;
   private $city;
   private $country;
   private $phone;
@@ -25,6 +26,10 @@ class Billing
   function set_buildingNo($bno)
   {
     $this->buildingNo = $bno;
+  }
+  function set_street($street)
+  {
+    $this->street = $street;
   }
   function set_city($city)
   {
@@ -91,6 +96,11 @@ function get_flatNo()
   {
     return $this->buildingNo;
   }
+
+  function get_street()
+  {
+    return $this->street;
+  }
   function get_city()
   {
     return $this->city;
@@ -150,10 +160,11 @@ function get_flatNo()
 
 
 
-  public function adding($flatNo, $buildingNo, $city, $country, $phone, $email, $creditCardHolderName,$creditCardType,$creditCardNum,$expMonth,$expYear,$cvv,$orderId,$buyerId)
+  public function adding($flatNo, $buildingNo, $street, $city, $country, $phone, $email, $creditCardHolderName,$creditCardType,$creditCardNum,$expMonth,$expYear,$cvv,$orderId,$buyerId)
   {
     $this->flatNo = $flatNo;
     $this->buildingNo = $buildingNo;
+    $this->street = $street;
     $this->city = $city;
     $this->country = $country;
     $this->phone = $phone;

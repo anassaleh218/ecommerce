@@ -1,15 +1,69 @@
-<?php 
+<?php
 if (!isset($_SESSION["errMsg"])) {
-	session_start();
-	if (isset($_SESSION["errMsg"])) {
-		echo "<div class=\"alert alert-danger\" role=\"alert\">" . $_SESSION["errMsg"] . "</div>";
+  session_start();
+  if (isset($_SESSION["errMsg"])) {
+    echo "<div class=\"alert alert-danger\" role=\"alert\">" . $_SESSION["errMsg"] . "</div>";
     unset($_SESSION['errMsg']);
-
-	}
-	// session_destroy();
+  }
+  // session_destroy();
 }
 ?>
 
+
+<?php
+require_once '../Models/product.php';
+require_once '../Controller/Authcontroller.php';
+require_once '../Controller/ProductController.php';
+
+$productController = new ProductController;
+$categories = $productController->getCategories();
+$products = $productController->getAllProducts();
+
+if (isset($_GET['pid'])) {
+  if (!empty($_GET['pid'])) {
+
+
+    $id = $_GET['pid'];
+    // $productController = new ProductController;
+    $auth = new AuthController;
+
+
+    if ($productController->getProductById($id)) {
+      $product = $productController->getProductById($id)[0];
+      // print_r($product);
+      if (isset($_GET['add'])) {
+        if ($auth->getCurrentUser() != false) {
+
+          $currentUser = $auth->getCurrentUser();
+          try {
+            $productController->addToFav($currentUser, $product["id"]);
+            echo "<div class=\"alert alert-success\" role=\"alert\">added successfully</div>";
+          } catch (Exception $e) {
+            // echo "<div class=\"alert alert-success\" role=\"alert\">added successfully</div>";
+            echo 'Message: ' . $e->getMessage();
+          }
+        } else {
+          if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+          }
+          $_SESSION["errMsg"] =  "you must login or regester first";
+          header("location: ../Views/login.php");
+        }
+      }
+    } else {
+      $_SESSION["errMsg"] =  "no product by this id";
+      header("location: ../Views/index.php");
+    }
+  } else {
+    // $_SESSION["errMsg"] =  "no product by this id";
+    // header("location: ../Views/index.php");
+  }
+} else {
+  // $_SESSION["errMsg"] =  "no product by this id";
+  // header("location: ../Views/index.php");
+}
+
+?>
 
 <?php
 require_once 'layout/header.php';
@@ -33,7 +87,7 @@ require_once 'layout/header.php';
             <h4>Shop is fun</h4>
             <h1>Browse Our Premium Product</h1>
             <p>Us which over of signs divide dominion deep fill bring they're meat beho upon own earth without morning over third. Their male dry. They are great appear whose land fly grass.</p>
-            <a class="button button-hero" href="#">Browse Now</a>
+            <a class="button button-hero" href="./products.php">Browse Now</a>
           </div>
         </div>
       </div>
@@ -46,23 +100,23 @@ require_once 'layout/header.php';
     <div class="owl-carousel owl-theme hero-carousel">
       <div class="hero-carousel__slide">
         <img src="asstes/img/home/hero-slide1.png" alt="" class="img-fluid">
-        <a href="#" class="hero-carousel__slideOverlay">
-          <h3>Wireless Headphone</h3>
-          <p>Accessories Item</p>
+        <a href="./category-products.php?id=4" class="hero-carousel__slideOverlay">
+          <h3>Shoes</h3>
+          <!-- <p>Wireless Headphone</p> -->
         </a>
       </div>
       <div class="hero-carousel__slide">
         <img src="asstes/img/home/hero-slide2.png" alt="" class="img-fluid">
-        <a href="#" class="hero-carousel__slideOverlay">
+        <a href="./category-products.php?id=3" class="hero-carousel__slideOverlay">
           <h3>Wireless Headphone</h3>
-          <p>Accessories Item</p>
+          <!-- <p>Accessories Item</p> -->
         </a>
       </div>
       <div class="hero-carousel__slide">
         <img src="asstes/img/home/hero-slide3.png" alt="" class="img-fluid">
-        <a href="#" class="hero-carousel__slideOverlay">
-          <h3>Wireless Headphone</h3>
-          <p>Accessories Item</p>
+        <a href="./category-products.php?id=5" class="hero-carousel__slideOverlay">
+          <h3>Accessories</h3>
+          <!-- <p>Accessories Item</p> -->
         </a>
       </div>
     </div>
@@ -77,24 +131,37 @@ require_once 'layout/header.php';
         <h2>Trending <span class="section-intro__style">Product</span></h2>
       </div>
       <div class="row">
-        <div class="col-md-6 col-lg-4 col-xl-3">
-          <div class="card text-center card-product">
-            <div class="card-product__img">
-              <img class="card-img" src="asstes/img/product/product1.png" alt="">
-              <ul class="card-product__imgOverlay">
-                <li><button><i class="ti-search"></i></button></li>
-                <li><button><i class="ti-shopping-cart"></i></button></li>
-                <li><button><i class="ti-heart"></i></button></li>
-              </ul>
-            </div>
-            <div class="card-body">
-              <p>Accessories</p>
-              <h4 class="card-product__title"><a href="single-product.html">Quartz Belt Watch</a></h4>
-              <p class="card-product__price">$150.00</p>
+        <?php
+        foreach ($products as $product) {
+          // card-img
+        ?>
+          <div class="col-md-6 col-lg-4">
+            <div class="card text-center card-product">
+              <div class="card-product__img">
+                <img class="" width="250" src="<?php echo $product['image'] ?>" alt="<?php echo $product['name'] ?>">
+                <ul class="card-product__imgOverlay">
+                  <!-- <li><button><i class="ti-search"></i></button></li> -->
+                  <li>
+                    <form action="single-product.php">
+                      <input type="hidden" name="quantity" value="1">
+                      <input type="hidden" name="id" value="<?php echo $product["id"]; ?>">
+                      <input type="hidden" name="add" value="">
+                      <button><i class="ti-shopping-cart"></i></button>
+                    </form>
+                  </li>
+                  <li><button><a href="products.php?pid=<?php echo $product["id"]; ?>&add"><i class="ti-heart"></i></a></button></li>
+                </ul>
+              </div>
+              <div class="card-body">
+                <p><?php echo $product['category'] ?></p>
+                <h4 class="card-product__title"><a class="stretched-link" href="single-product.php?id=<?php echo $product['id'] ?>"><?php echo $product['name'] ?></a></h4>
+                <p class="card-product__price">$<?php echo $product['price'] ?></p>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="col-md-6 col-lg-4 col-xl-3">
+        <?php } ?>
+
+        <!-- <div class="col-md-6 col-lg-4 col-xl-3">
           <div class="card text-center card-product">
             <div class="card-product__img">
               <img class="card-img" src="asstes/img/product/product2.png" alt="">
@@ -212,7 +279,7 @@ require_once 'layout/header.php';
               <p class="card-product__price">$150.00</p>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </section>
@@ -228,7 +295,7 @@ require_once 'layout/header.php';
             <h3>Up To 50% Off</h3>
             <h4>Winter Sale</h4>
             <p>Him she'd let them sixth saw light</p>
-            <a class="button button--active mt-3 mt-xl-4" href="#">Shop Now</a>
+            <a class="button button--active mt-3 mt-xl-4" href="./products.php">Shop Now</a>
           </div>
         </div>
       </div>
@@ -244,140 +311,155 @@ require_once 'layout/header.php';
         <h2>Best <span class="section-intro__style">Sellers</span></h2>
       </div>
       <div class="owl-carousel owl-theme" id="bestSellerCarousel">
-        <div class="card text-center card-product">
-          <div class="card-product__img">
-            <img class="img-fluid" src="asstes/img/product/product1.png" alt="">
-            <ul class="card-product__imgOverlay">
-              <li><button><i class="ti-search"></i></button></li>
-              <li><button><i class="ti-shopping-cart"></i></button></li>
-              <li><button><i class="ti-heart"></i></button></li>
-            </ul>
-          </div>
-          <div class="card-body">
-            <p>Accessories</p>
-            <h4 class="card-product__title"><a href="single-product.html">Quartz Belt Watch</a></h4>
-            <p class="card-product__price">$150.00</p>
-          </div>
-        </div>
+        <?php
+        foreach ($products as $product) {
+          // card-img
+        ?>
 
-        <div class="card text-center card-product">
-          <div class="card-product__img">
-            <img class="img-fluid" src="asstes/img/product/product2.png" alt="">
-            <ul class="card-product__imgOverlay">
-              <li><button><i class="ti-search"></i></button></li>
-              <li><button><i class="ti-shopping-cart"></i></button></li>
-              <li><button><i class="ti-heart"></i></button></li>
-            </ul>
+          <div class="card text-center card-product">
+            <div class="card-product__img">
+              <img class="img-fluid" src="<?php echo $product['image'] ?>" alt="<?php echo $product['name'] ?>">
+              <ul class="card-product__imgOverlay">
+                <li>
+                  <form action="single-product.php">
+                    <input type="hidden" name="quantity" value="1">
+                    <input type="hidden" name="id" value="<?php echo $product["id"]; ?>">
+                    <input type="hidden" name="add" value="">
+                    <button><i class="ti-shopping-cart"></i></button>
+                  </form>
+                </li>
+                <li><button><a href="products.php?pid=<?php echo $product["id"]; ?>&add"><i class="ti-heart"></i></a></button></li>
+              </ul>
+            </div>
+            <div class="card-body">
+              <p><?php echo $product['category'] ?></p>
+              <h4 class="card-product__title"><a class="stretched-link" href="single-product.php?id=<?php echo $product['id'] ?>"><?php echo $product['name'] ?></a></h4>
+              <p class="card-product__price">$<?php echo $product['price'] ?></p>
+            </div>
           </div>
-          <div class="card-body">
-            <p>Beauty</p>
-            <h4 class="card-product__title"><a href="single-product.html">Women Freshwash</a></h4>
-            <p class="card-product__price">$150.00</p>
-          </div>
-        </div>
-
-        <div class="card text-center card-product">
-          <div class="card-product__img">
-            <img class="img-fluid" src="asstes/img/product/product3.png" alt="">
-            <ul class="card-product__imgOverlay">
-              <li><button><i class="ti-search"></i></button></li>
-              <li><button><i class="ti-shopping-cart"></i></button></li>
-              <li><button><i class="ti-heart"></i></button></li>
-            </ul>
-          </div>
-          <div class="card-body">
-            <p>Decor</p>
-            <h4 class="card-product__title"><a href="single-product.html">Room Flash Light</a></h4>
-            <p class="card-product__price">$150.00</p>
-          </div>
-        </div>
-
-        <div class="card text-center card-product">
-          <div class="card-product__img">
-            <img class="img-fluid" src="asstes/img/product/product4.png" alt="">
-            <ul class="card-product__imgOverlay">
-              <li><button><i class="ti-search"></i></button></li>
-              <li><button><i class="ti-shopping-cart"></i></button></li>
-              <li><button><i class="ti-heart"></i></button></li>
-            </ul>
-          </div>
-          <div class="card-body">
-            <p>Decor</p>
-            <h4 class="card-product__title"><a href="single-product.html">Room Flash Light</a></h4>
-            <p class="card-product__price">$150.00</p>
-          </div>
-        </div>
-
-        <div class="card text-center card-product">
-          <div class="card-product__img">
-            <img class="img-fluid" src="asstes/img/product/product1.png" alt="">
-            <ul class="card-product__imgOverlay">
-              <li><button><i class="ti-search"></i></button></li>
-              <li><button><i class="ti-shopping-cart"></i></button></li>
-              <li><button><i class="ti-heart"></i></button></li>
-            </ul>
-          </div>
-          <div class="card-body">
-            <p>Accessories</p>
-            <h4 class="card-product__title"><a href="single-product.html">Quartz Belt Watch</a></h4>
-            <p class="card-product__price">$150.00</p>
-          </div>
-        </div>
-
-        <div class="card text-center card-product">
-          <div class="card-product__img">
-            <img class="img-fluid" src="asstes/img/product/product2.png" alt="">
-            <ul class="card-product__imgOverlay">
-              <li><button><i class="ti-search"></i></button></li>
-              <li><button><i class="ti-shopping-cart"></i></button></li>
-              <li><button><i class="ti-heart"></i></button></li>
-            </ul>
-          </div>
-          <div class="card-body">
-            <p>Beauty</p>
-            <h4 class="card-product__title"><a href="single-product.html">Women Freshwash</a></h4>
-            <p class="card-product__price">$150.00</p>
-          </div>
-        </div>
-
-        <div class="card text-center card-product">
-          <div class="card-product__img">
-            <img class="img-fluid" src="asstes/img/product/product3.png" alt="">
-            <ul class="card-product__imgOverlay">
-              <li><button><i class="ti-search"></i></button></li>
-              <li><button><i class="ti-shopping-cart"></i></button></li>
-              <li><button><i class="ti-heart"></i></button></li>
-            </ul>
-          </div>
-          <div class="card-body">
-            <p>Decor</p>
-            <h4 class="card-product__title"><a href="single-product.html">Room Flash Light</a></h4>
-            <p class="card-product__price">$150.00</p>
-          </div>
-        </div>
-
-        <div class="card text-center card-product">
-          <div class="card-product__img">
-            <img class="img-fluid" src="asstes/img/product/product4.png" alt="">
-            <ul class="card-product__imgOverlay">
-              <li><button><i class="ti-search"></i></button></li>
-              <li><button><i class="ti-shopping-cart"></i></button></li>
-              <li><button><i class="ti-heart"></i></button></li>
-            </ul>
-          </div>
-          <div class="card-body">
-            <p>Decor</p>
-            <h4 class="card-product__title"><a href="single-product.html">Room Flash Light</a></h4>
-            <p class="card-product__price">$150.00</p>
-          </div>
-        </div>
+        <?php } ?>
       </div>
+
+
+
+        <!-- <div class="card text-center card-product">
+          <div class="card-product__img">
+            <img class="img-fluid" src="asstes/img/product/product2.png" alt="">
+            <ul class="card-product__imgOverlay">
+              <li><button><i class="ti-search"></i></button></li>
+              <li><button><i class="ti-shopping-cart"></i></button></li>
+              <li><button><i class="ti-heart"></i></button></li>
+            </ul>
+          </div>
+          <div class="card-body">
+            <p>Beauty</p>
+            <h4 class="card-product__title"><a href="single-product.html">Women Freshwash</a></h4>
+            <p class="card-product__price">$150.00</p>
+          </div>
+        </div>
+
+        <div class="card text-center card-product">
+          <div class="card-product__img">
+            <img class="img-fluid" src="asstes/img/product/product3.png" alt="">
+            <ul class="card-product__imgOverlay">
+              <li><button><i class="ti-search"></i></button></li>
+              <li><button><i class="ti-shopping-cart"></i></button></li>
+              <li><button><i class="ti-heart"></i></button></li>
+            </ul>
+          </div>
+          <div class="card-body">
+            <p>Decor</p>
+            <h4 class="card-product__title"><a href="single-product.html">Room Flash Light</a></h4>
+            <p class="card-product__price">$150.00</p>
+          </div>
+        </div>
+
+        <div class="card text-center card-product">
+          <div class="card-product__img">
+            <img class="img-fluid" src="asstes/img/product/product4.png" alt="">
+            <ul class="card-product__imgOverlay">
+              <li><button><i class="ti-search"></i></button></li>
+              <li><button><i class="ti-shopping-cart"></i></button></li>
+              <li><button><i class="ti-heart"></i></button></li>
+            </ul>
+          </div>
+          <div class="card-body">
+            <p>Decor</p>
+            <h4 class="card-product__title"><a href="single-product.html">Room Flash Light</a></h4>
+            <p class="card-product__price">$150.00</p>
+          </div>
+        </div>
+
+        <div class="card text-center card-product">
+          <div class="card-product__img">
+            <img class="img-fluid" src="asstes/img/product/product1.png" alt="">
+            <ul class="card-product__imgOverlay">
+              <li><button><i class="ti-search"></i></button></li>
+              <li><button><i class="ti-shopping-cart"></i></button></li>
+              <li><button><i class="ti-heart"></i></button></li>
+            </ul>
+          </div>
+          <div class="card-body">
+            <p>Accessories</p>
+            <h4 class="card-product__title"><a href="single-product.html">Quartz Belt Watch</a></h4>
+            <p class="card-product__price">$150.00</p>
+          </div>
+        </div>
+
+        <div class="card text-center card-product">
+          <div class="card-product__img">
+            <img class="img-fluid" src="asstes/img/product/product2.png" alt="">
+            <ul class="card-product__imgOverlay">
+              <li><button><i class="ti-search"></i></button></li>
+              <li><button><i class="ti-shopping-cart"></i></button></li>
+              <li><button><i class="ti-heart"></i></button></li>
+            </ul>
+          </div>
+          <div class="card-body">
+            <p>Beauty</p>
+            <h4 class="card-product__title"><a href="single-product.html">Women Freshwash</a></h4>
+            <p class="card-product__price">$150.00</p>
+          </div>
+        </div>
+
+        <div class="card text-center card-product">
+          <div class="card-product__img">
+            <img class="img-fluid" src="asstes/img/product/product3.png" alt="">
+            <ul class="card-product__imgOverlay">
+              <li><button><i class="ti-search"></i></button></li>
+              <li><button><i class="ti-shopping-cart"></i></button></li>
+              <li><button><i class="ti-heart"></i></button></li>
+            </ul>
+          </div>
+          <div class="card-body">
+            <p>Decor</p>
+            <h4 class="card-product__title"><a href="single-product.html">Room Flash Light</a></h4>
+            <p class="card-product__price">$150.00</p>
+          </div>
+        </div>
+
+        <div class="card text-center card-product">
+          <div class="card-product__img">
+            <img class="img-fluid" src="asstes/img/product/product4.png" alt="">
+            <ul class="card-product__imgOverlay">
+              <li><button><i class="ti-search"></i></button></li>
+              <li><button><i class="ti-shopping-cart"></i></button></li>
+              <li><button><i class="ti-heart"></i></button></li>
+            </ul>
+          </div>
+          <div class="card-body">
+            <p>Decor</p>
+            <h4 class="card-product__title"><a href="single-product.html">Room Flash Light</a></h4>
+            <p class="card-product__price">$150.00</p>
+          </div>
+        </div> -->
     </div>
+
   </section>
   <!-- ================ Best Selling item  carousel end ================= -->
 
   <!-- ================ Blog section start ================= -->
-  <section class="blog">
+  <!-- <section class="blog">
     <div class="container">
       <div class="section-intro pb-60px">
         <p>Popular Item in the market</p>
@@ -437,11 +519,11 @@ require_once 'layout/header.php';
         </div>
       </div>
     </div>
-  </section>
+  </section> -->
   <!-- ================ Blog section end ================= -->
 
   <!-- ================ Subscribe section start ================= -->
-  <section class="subscribe-position">
+  <!-- <section class="subscribe-position">
     <div class="container">
       <div class="subscribe text-center">
         <h3 class="subscribe__title">Get Update From Anywhere</h3>
@@ -462,7 +544,7 @@ require_once 'layout/header.php';
 
       </div>
     </div>
-  </section>
+  </section> -->
   <!-- ================ Subscribe section end ================= -->
 
 
