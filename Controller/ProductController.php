@@ -316,9 +316,10 @@ class ProductController
       $this->db = new DBController;
       if ($this->db->openConnection()) {
          // $product->sellerid=
-         $query = "select user.fullname,rate,feedback from product_feedback 
+         $query = "select product_feedback.*,user.fullname from product_feedback 
            INNER Join user on product_feedback.buyer_id=user.id
-           INNER Join product on product_feedback.product_id=$product_id";
+           INNER Join product on product_feedback.product_id=product.id
+           where product_feedback.product_id='$product_id'";
          return $this->db->select($query);
       } else {
          echo "Error in Database Connection";

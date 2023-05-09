@@ -108,8 +108,8 @@ if ($auth->getCurrentUser() != false) {
 
             <!-- <li class="nav-item"><a class="nav-link" href="cart.php">Shopping Cart</a></li> -->
             <!-- <li class="nav-item"><a class="nav-link" href="single-product.php">Product Details</a></li> -->
-            <li class="nav-item"><a class="nav-link" href="checkout.php">Product Checkout</a></li>
-            <li class="nav-item"><a class="nav-link" href="confirmation.php">Confirmation</a></li>
+            <li class="nav-item"><a class="nav-link" href="my-orders.php">My Orders</a></li>
+            <!-- <li class="nav-item"><a class="nav-link" href="confirmation.php">Confirmation</a></li> -->
             </ul>
             <ul class="nav navbar-nav">
               <li class="nav-item"><a href="products.php"><i class="fa-solid fa-magnifying-glass"></i></a></li>

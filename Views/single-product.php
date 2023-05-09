@@ -360,6 +360,7 @@ require_once 'layout/header.php';
 						</div> -->
 
 						<?php
+						// print_r($getFeedback);
 						foreach ($getFeedback as $fb) {
 						?>
 							<div class="review_list">
