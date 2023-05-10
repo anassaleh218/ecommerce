@@ -137,7 +137,7 @@ require_once 'layout/header.php';
                           <button><i class="ti-shopping-cart"></i></button>
                         </form>
                       </li>
-                      <li><a href="products.php?pwid=<?php echo $product["id"]; ?>&addtowatchlist"><button><i class="fa-solid fa-bookmark"></i></button></a></li>
+                      <li><a href="products.php?pwid=<?php echo $product["id"]; ?>&addtowatchlist"><button><i class="fa-regular fa-bookmark"></i></button></a></li>
                       <li><button><a href="products.php?pfid=<?php echo $product["id"]; ?>&addtofav"><i class="ti-heart"></i></a></button></li>
                     </ul>
                   </div>

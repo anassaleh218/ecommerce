@@ -130,7 +130,17 @@ require_once 'layout/header.php';
         <!-- Start Best Seller -->
         <section class="lattest-product-area pb-40 category-list">
           <div class="row">
+
+             <?php
+						// print_r($getFeedback);
+						if(empty($products)){
+							// print_r($getFeedback)
+							?>
+							<h4>You Have No Products In Your WatchList Yet !!, </h4>
+              <h4 class="text-primary">To Add Product To Your WatchList Press On <i class="fa-regular fa-bookmark"></i> Icon On Product Card</h4>
             <?php
+            }
+						else{
             foreach ($products as $product) {
             ?>
               <div class="col-md-6 col-lg-4">
@@ -146,7 +156,7 @@ require_once 'layout/header.php';
                           <button><i class="ti-shopping-cart"></i></button>
                         </form>
                       </li>
-                      <li><a href="watchlist.php?pwid=<?php echo $product["id"]; ?>"><button><i class="fa-regular fa-bookmark"></i></button></a></li>
+                      <li><a href="watchlist.php?pwid=<?php echo $product["id"]; ?>"><button><i class="fa-solid fa-bookmark"></i></button></a></li>
                       <li><button><a href="watchlist.php?pfid=<?php echo $product["id"]; ?>&addtofav"><i class="ti-heart"></i></a></button></li>
                     </ul>
                   </div>
@@ -157,7 +167,7 @@ require_once 'layout/header.php';
                   </div>
                 </div>
               </div>
-            <?php } ?>
+            <?php }} ?>
           </div>
         </section>
         <!-- End Best Seller -->

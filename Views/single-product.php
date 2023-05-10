@@ -333,6 +333,14 @@ require_once 'layout/header.php';
 
 						<?php
 						// print_r($getFeedback);
+						if(empty($getFeedback)){
+							// print_r($getFeedback)
+							?>
+							<h5>This Product Has No Feedback Yet !!</h5>
+							<h4>Share Your Feedback With Us Now</h4>
+							<?php
+						}
+						else{
 						foreach ($getFeedback as $fb) {
 						?>
 							<div class="review_list">
@@ -368,6 +376,7 @@ require_once 'layout/header.php';
 							</div>
 						<?php
 						}
+					}
 						?>
 					</div>
 					<div class="col-lg-6">
