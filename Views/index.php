@@ -216,7 +216,7 @@ require_once 'layout/header.php';
                       <button><i class="ti-shopping-cart"></i></button>
                     </form>
                   </li>
-                  <li><a href="index.php?pwid=<?php echo $product["id"]; ?>&addtowatchlist"><button><i class="fa-solid fa-bookmark"></i></button></a></li>
+                  <li><a href="index.php?pwid=<?php echo $product["id"]; ?>&addtowatchlist"><button><i class="fa-regular fa-bookmark"></i></button></a></li>
                   <li><button><a href="index.php?pfid=<?php echo $product["id"]; ?>&addtofav"><i class="ti-heart"></i></a></button></li>
                 </ul>
               </div>
@@ -277,7 +277,7 @@ require_once 'layout/header.php';
                     <button><i class="ti-shopping-cart"></i></button>
                   </form>
                 </li>
-                <li><a href="index.php?pwid=<?php echo $product["id"]; ?>&addtowatchlist"><button><i class="fa-solid fa-bookmark"></i></button></a></li>
+                <li><a href="index.php?pwid=<?php echo $product["id"]; ?>&addtowatchlist"><button><i class="fa-regular fa-bookmark"></i></i></button></a></li>
                 <li><button><a href="index.php?pfid=<?php echo $product["id"]; ?>&addtofav"><i class="ti-heart"></i></a></button></li>
               </ul>
             </div>

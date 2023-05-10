@@ -253,7 +253,7 @@ require_once 'layout/header.php';
                           <button><i class="ti-shopping-cart"></i></button>
                         </form>
                       </li>
-                      <li><a href="category-products.php?id=<?php echo $cat_id; ?>&pwid=<?php echo $product["id"]; ?>&addtowatchlist"><button><i class="fa-solid fa-bookmark"></i></button></a></li>
+                      <li><a href="category-products.php?id=<?php echo $cat_id; ?>&pwid=<?php echo $product["id"]; ?>&addtowatchlist"><button><i class="fa-regular fa-bookmark"></i></button></a></li>
                       <li><button><a href="category-products.php?id=<?php echo $cat_id; ?>&pfid=<?php echo $product["id"]; ?>&addtofav"><i class="ti-heart"></i></a></button></li>
                     </ul>
 

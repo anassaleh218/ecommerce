@@ -39,11 +39,11 @@ if ($auth->getCurrentUser() != false) {
 // in the checkout page get orderid which is created and getting this order data
 
 if (isset($_GET['add'])) {
-    $order= new OrderController;
+    $order = new OrderController;
     try {
-        $orderId=$order->createOrder($currentUser->id);
-        $order->addToOrder($orderId,$cartItems,$currentUser);
-        header("Location: checkout.php?orderid=".$orderId);
+        $orderId = $order->createOrder($currentUser->id);
+        $order->addToOrder($orderId, $cartItems, $currentUser);
+        header("Location: checkout.php?orderid=" . $orderId);
     } catch (Exception $e) {
         // echo "<div class=\"alert alert-success\" role=\"alert\">order not created successfully</div>";
         echo 'Message: ' . $e->getMessage();
@@ -52,7 +52,6 @@ if (isset($_GET['add'])) {
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
-
 }
 
 
@@ -74,7 +73,7 @@ require_once 'layout/header.php';
                 <nav aria-label="breadcrumb" class="banner-breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        
+
                         <li class="breadcrumb-item active" aria-current="page">Shopping Cart</li>
                     </ol>
                 </nav>
@@ -94,7 +93,8 @@ require_once 'layout/header.php';
                 <table class="table">
                     <thead>
                         <tr>
-                            <th scope="col">Product</th>
+                            <th scope="col">Product Image</th>
+                            <th scope="col">Name</th>
                             <th scope="col">Price</th>
                             <th scope="col">Quantity</th>
                             <th scope="col">Total</th>
@@ -107,24 +107,16 @@ require_once 'layout/header.php';
                         ?>
                             <tr>
                                 <td>
-                                    <div class="media">
-                                        <div class="d-flex">
-                                            <img src=".asstes/img/cart/cart1.png" alt="">
-                                        </div>
-                                        <div class="media-body">
-                                            <p><?php echo $item["name"] ?></p>
-                                        </div>
-                                    </div>
+                                    <img src="<?php echo $item["image"] ?>" width="150" alt="">
+                                </td>
+                                <td>
+                                    <p><?php echo $item["name"] ?></p>
                                 </td>
                                 <td>
                                     <h5>$<?php echo $item["start_price"] ?></h5>
                                 </td>
                                 <td>
-                                    <div class="product_count">
-                                        <input type="text" name="qty" id="sst" maxlength="12" value="<?php echo $item["quantity"] ?>" title="Quantity:" class="input-text qty">
-                                        <!-- <button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;" class="increase items-count" type="button"><i class="lnr lnr-chevron-up"></i></button>
-                                        <button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;" class="reduced items-count" type="button"><i class="lnr lnr-chevron-down"></i></button> -->
-                                    </div>
+                                    <h5><?php echo $item["quantity"] ?></h5>
                                 </td>
                                 <td>
                                     <h5>$<?php echo $item["start_price"] * $item["quantity"] ?></h5>
@@ -270,7 +262,8 @@ require_once 'layout/header.php';
                             <td>
                                 <div class="checkout_btn_inner d-flex align-items-center">
                                     <a class="gray_btn" href="./products.php">Continue Shopping</a>
-                                    <!-- <a class="primary-btn ml-2" href="./checkout.php?orderid=<?php //echo $orderId;?>&add">Proceed to checkout</a> -->
+                                    <!-- <a class="primary-btn ml-2" href="./checkout.php?orderid=<?php //echo $orderId;
+                                                                                                    ?>&add">Proceed to checkout</a> -->
                                     <a class="primary-btn ml-2" href="cart.php?add">Proceed to checkout</a>
                                 </div>
                             </td>
