@@ -57,52 +57,9 @@ if (isset($_GET['pfid']) || isset($_GET['pwid'])) {
   }
 }
 /////////// ////////////////////////// ///////////
-
-
-
-// if (isset($_GET['pid'])) {
-//   if (!empty($_GET['pid'])) {
-//     $id = $_GET['pid'];
-//     $auth = new AuthController;
-//     if ($productController->getProductById($id)) {
-//       $product = $productController->getProductById($id)[0];
-//       // print_r($product);
-//       if (isset($_GET['add'])) {
-//         if ($auth->getCurrentUser() != false) {
-
-//           $currentUser = $auth->getCurrentUser();
-//           try {
-//             $productController->addToFav($currentUser, $product["id"]);
-//             echo "<div class=\"alert alert-success\" role=\"alert\">added successfully</div>";
-//           } catch (Exception $e) {
-//             // echo "<div class=\"alert alert-success\" role=\"alert\">added successfully</div>";
-//             echo 'Message: ' . $e->getMessage();
-//           }
-//         } else {
-//           if (session_status() === PHP_SESSION_NONE) {
-//             session_start();
-//           }
-//           $_SESSION["errMsg"] =  "you must login or regester first";
-//           header("location: ../Views/login.php");
-//         }
-//       }
-//     } else {
-//       $_SESSION["errMsg"] =  "no product by this id";
-//       header("location: ../Views/index.php");
-//     }
-//   } else {
-//     // $_SESSION["errMsg"] =  "no product by this id";
-//     // header("location: ../Views/index.php");
-//   }
-// } else {
-//   // $_SESSION["errMsg"] =  "no product by this id";
-//   // header("location: ../Views/index.php");
-// }
-
-
-
-
 ?>
+
+
 
 <?php
 require_once 'layout/header.php';
@@ -132,32 +89,6 @@ require_once 'layout/header.php';
       </div>
     </div>
   </section>
-  <!--================ Hero banner start =================-->
-
-  <!--================ Hero Carousel start =================-->
-  <!-- <section class="section-margin mt-0">
-    <div class="owl-carousel owl-theme hero-carousel">
-      <div class="hero-carousel__slide">
-        <img src="asstes/img/home/hero-slide1.png" alt="" class="img-fluid">
-        <a href="./category-products.php?id=4" class="hero-carousel__slideOverlay">
-          <h3>Shoes</h3>
-        </a>
-      </div>
-      <div class="hero-carousel__slide">
-        <img src="asstes/img/home/hero-slide2.png" alt="" class="img-fluid">
-        <a href="./category-products.php?id=3" class="hero-carousel__slideOverlay">
-          <h3>Wireless Headphone</h3>
-        </a>
-      </div>
-      <div class="hero-carousel__slide">
-        <img src="asstes/img/home/hero-slide3.png" alt="" class="img-fluid">
-        <a href="./category-products.php?id=5" class="hero-carousel__slideOverlay">
-          <h3>Accessories</h3>
-        </a>
-      </div>
-    </div>
-  </section> -->
-
   <!--================ Hero Carousel start =================-->
   <section class="section-margin mt-0">
     <div class="container">
@@ -168,18 +99,11 @@ require_once 'layout/header.php';
       <div class="owl-carousel owl-theme hero-carousel">
         <?php foreach ($categories as $category) {  ?>
           <div class="card text-center">
-            <!-- <div class="card-header bg-transparent border-success">Header</div> -->
-            <!-- <div class="card-body text-primary text-center">
-          <h5 class=" card-title">
-            << <?php echo $category['name'] ?> >>
-          </h5>
-        </div> -->
             <div class="card-footer bg-transparent border-primary">
               <a href="./category-products.php?id=<?php echo $category['id'] ?>" class="btn btn-primary w-100 p-3">Show All <b><?php echo $category['name'] ?></b></a>
             </div>
           </div>
         <?php } ?>
-
 
 
       </div>
@@ -189,7 +113,7 @@ require_once 'layout/header.php';
   </section>
   <!--================ Hero Carousel end =================-->
 
-  <!--================ Hero Carousel end =================-->
+
 
   <!-- ================ trending product section start ================= -->
   <section class="section-margin calc-60px">

@@ -55,28 +55,10 @@ if ($auth->getCurrentUser() != false) {
       <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container" style="min-width: 1220px;">
           <a class="navbar-brand logo_h" href="index.php"><img src="asstes/img/logo.png" alt=""></a>
-          <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button> -->
-
 
           <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
             <ul class="nav navbar-nav menu_nav ml-auto mr-auto">
               <li class="nav-item active"><a class="nav-link" href="index.php">Home</a></li>
-
-
-              <!-- <li class="nav-item submenu dropdown">
-                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Blog</a>
-                <ul class="dropdown-menu">
-                  <li class="nav-item"><a class="nav-link" href="blog.php">Blog</a></li>
-                  <li class="nav-item"><a class="nav-link" href="single-blog.php">Blog Details</a></li>
-                </ul>
-              </li> -->
-
-
-
 
               <?php if (isset($userRole)) {
                 if ($userRole == "admin") { ?>
@@ -106,10 +88,7 @@ if ($auth->getCurrentUser() != false) {
               </ul>
             </li>
 
-            <!-- <li class="nav-item"><a class="nav-link" href="cart.php">Shopping Cart</a></li> -->
-            <!-- <li class="nav-item"><a class="nav-link" href="single-product.php">Product Details</a></li> -->
             <li class="nav-item"><a class="nav-link" href="my-orders.php">My Orders</a></li>
-            <!-- <li class="nav-item"><a class="nav-link" href="confirmation.php">Confirmation</a></li> -->
             </ul>
             <ul class="nav navbar-nav">
               <li class="nav-item"><a href="products.php"><i class="fa-solid fa-magnifying-glass"></i></a></li>

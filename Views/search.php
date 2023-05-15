@@ -65,44 +65,17 @@ require_once 'layout/header.php';
             </div>
           </div>
         </div>
-        <!-- End Filter Bar -->
-        <!-- Start Best Seller -->
-        <!-- <section class="lattest-product-area pb-40 category-list">
-          <div class="row">
-            <?php
-            foreach ($products as $product) {
-            ?>
-              <div class="col-md-6 col-lg-4">
-                <div class="card text-center card-product">
-                  <div class="card-product__img">
-                    <img class="card-img" src="<?php echo $product['image'] ?>" style="width: 300px;height: 300px;object-fit: cover;" alt="<?php echo $product['name'] ?>">
-                    <ul class="card-product__imgOverlay">
-                      <li>
-                        <form action="single-product.php">
-                          <input type="hidden" name="quantity" value="1">
-                          <input type="hidden" name="id" value="<?php echo $product["id"]; ?>">
-                          <input type="hidden" name="add" value="">
-                          <button><i class="ti-shopping-cart"></i></button>
-                        </form>
-                      </li>
-                      <li><a href="watchlist.php?pwid=<?php echo $product["id"]; ?>"><button><i class="fa-regular fa-bookmark"></i></button></a></li>
-                      <li><button><a href="watchlist.php?pfid=<?php echo $product["id"]; ?>&addtofav"><i class="ti-heart"></i></a></button></li>
-                    </ul>
-                  </div>
-                  <div class="card-body">
-                    <p><?php echo $product['category'] ?></p>
-                    <h4 class="card-product__title"><a href="single-product.php?id=<?php echo $product['id'] ?>"><?php echo $product['name'] ?></a></h4>
-                    <p class="card-product__price">$<?php echo $product['start_price'] ?></p>
-                  </div>
-                </div>
-              </div>
-            <?php } ?>
-          </div>
-        </section> -->
-
         <section class="lattest-product-area pb-40 category-list">
           <div class="row">
             <?php
+            if(empty($products)){
+							// print_r($getFeedback)
+							?>
+							<h4>No Products With This Name !!,</h4>
+              <h4 class="text-primary"> Try To Search Again</h4>
+            <?php
+            }
+						else{
             foreach ($products as $product) {
             ?>
               <div class="col-md-6 col-lg-4">
@@ -126,13 +99,12 @@ require_once 'layout/header.php';
                     <p><?php echo $product['category'] ?></p>
                     <h4 class="card-product__title">
                       <a href="single-product.php?id=<?php echo $product['id'] ?>"><?php echo $product['name'] ?></a>
-                      <!-- <a class="stretched-link" href="single-product.php?id=<?php echo $product['id'] ?>"><?php echo $product['name'] ?></a> -->
                     </h4>
                     <p class="card-product__price">$<?php echo $product['price'] ?></p>
                   </div>
                 </div>
               </div>
-            <?php } ?>
+            <?php }} ?>
           </div>
         </section>
         <!-- End Best Seller -->
